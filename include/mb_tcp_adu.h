@@ -30,6 +30,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <sys/types.h>
 #include "mb_pdu.h"
 
 /*  TCP application data unit

@@ -26,14 +26,11 @@
  */
 
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
-#include <stdint.h>
 #include <time.h>
-#include <errno.h>
 #include "mb_tcp_client.h"
 #include "mb_tcp_adu.h"
-#include "mb_tcp_log.h"
+#include "mb_log.h"
 
 #define SERVER_ADDR    "127.0.0.1"
 #define SERVER_PORT    10000
@@ -54,32 +51,32 @@ int main(void)
     mb_tcp_adu_t req = {0};
     int ret = 0;
 
-    mb_tcp_log_set_level(MB_TCP_LOG_DEBUG);
+    mb_log_set_level(MB_LOG_DEBUG);
     mb_tcp_client_create(&client, timeout);
     ret = mb_tcp_client_authorise_addr(&client, AUTH_ADDR);
     if (ret < 0)
     {
-        mb_tcp_log_error("failed to authorise server address: %s", strerror(-ret));
+        mb_log_error("failed to authorise server address: %s", strerror(-ret));
         mb_tcp_client_destroy(&client);
         return EXIT_FAILURE;
     }
-    mb_tcp_log_notice("reading holding register[%d]", START_ADDR + 1);
+    mb_log_notice("reading holding register[%d]", START_ADDR + 1);
     mb_tcp_adu_set_header(&req, TRANS_ID, PROTO_ID, MB_TCP_CLIENT_UNIT_ID);
     ret = mb_pdu_set_rd_hold_regs_req(&req.pdu, START_ADDR, QUANT_REGS);
     if (ret < 0)
     {
-        mb_tcp_log_error("failed to set TCP ADU, ret: %d", ret);
+        mb_log_error("failed to set TCP ADU, ret: %d", ret);
         mb_tcp_client_destroy(&client);
         return EXIT_FAILURE;
     }
     ret = mb_tcp_client_exchange(&client, SERVER_ADDR, SERVER_PORT, &req, &resp);
     if (ret < 0)
     {
-        mb_tcp_log_error("failed to exchange with server: %s", strerror(-ret));
+        mb_log_error("failed to exchange with server: %s", strerror(-ret));
         mb_tcp_client_destroy(&client);
         return EXIT_FAILURE;
     }
-    mb_tcp_log_notice("holding register[%d]: 0x%04x",
+    mb_log_notice("holding register[%d]: 0x%04x",
                       req.pdu.rd_hold_regs_req.start_addr + 1,
                       resp.pdu.rd_hold_regs_resp.reg_val[0]);
     mb_tcp_client_destroy(&client);

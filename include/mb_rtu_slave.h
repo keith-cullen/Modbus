@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Keith Cullen.
+ * Copyright (c) 2017 Keith Cullen.
  * All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,30 +25,31 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef MB_TCP_CLIENT_H
-#define MB_TCP_CLIENT_H
+#ifndef MB_RTU_SLAVE_H
+#define MB_RTU_SLAVE_H
 
-#include <time.h>
-#include <netinet/in.h>
-#include "mb_ip_auth.h"
-#include "mb_tcp_con.h"
-#include "mb_tcp_adu.h"
+#include "mb_rtu_con.h"
+#include "mb_rtu_adu.h"
 
-#define MB_TCP_CLIENT_MAX_CON        4
-#define MB_TCP_CLIENT_SOCKET_CLOSED  0
-#define MB_TCP_CLIENT_UNIT_ID        0xff  /* unit id used in client requests */
+struct mb_rtu_slave;
 
-typedef struct
+typedef int (*mb_rtu_slave_handler_t)(struct mb_rtu_slave *slave, mb_rtu_adu_t *req, mb_rtu_adu_t *resp);
+
+typedef struct mb_rtu_slave
 {
-    mb_ip_auth_list_t auth;
-    mb_tcp_con_t con[MB_TCP_CLIENT_MAX_CON];
-    struct timeval timeout;
+    int addr;
+    mb_rtu_con_t con;
+    mb_rtu_slave_handler_t handler;
+    int bus_msg_count;                                  /* Return Bus Message Count */
+    int bus_com_err_count;                              /* Return Bus Communication Error Count */
+    int slave_excep_err_count;                          /* Return Slave Exception Error Count */
+    int slave_msg_count;                                /* Return Slave Message Count */
+    int slave_no_resp_count;                            /* Return Slave No Response Count */
 }
-mb_tcp_client_t;
+mb_rtu_slave_t;
 
-void mb_tcp_client_create(mb_tcp_client_t *client, struct timeval timeout);
-void mb_tcp_client_destroy(mb_tcp_client_t *client);
-int mb_tcp_client_authorise_addr(mb_tcp_client_t *client, const char *str);
-int mb_tcp_client_exchange(mb_tcp_client_t *client, const char *host, in_port_t port, mb_tcp_adu_t *req, mb_tcp_adu_t *resp);
+int mb_rtu_slave_create(mb_rtu_slave_t *slave, const char *dev, int addr, mb_rtu_slave_handler_t handler);
+void mb_rtu_slave_destroy(mb_rtu_slave_t *slave);
+int mb_rtu_slave_run(mb_rtu_slave_t *slave);
 
 #endif

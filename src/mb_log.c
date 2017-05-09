@@ -27,35 +27,35 @@
 
 #include <stdio.h>
 #include <stdarg.h>
-#include "mb_tcp_log.h"
+#include "mb_log.h"
 
-static mb_tcp_log_level_t mb_tcp_log_level = MB_TCP_LOG_DEF_LEVEL;
+static mb_log_level_t mb_log_level = MB_LOG_DEF_LEVEL;
 
-void mb_tcp_log_set_level(mb_tcp_log_level_t level)
+void mb_log_set_level(mb_log_level_t level)
 {
     switch (level) {
-    case MB_TCP_LOG_WARN:
-    case MB_TCP_LOG_NOTICE:
-    case MB_TCP_LOG_INFO:
-    case MB_TCP_LOG_DEBUG:
-        mb_tcp_log_level = level;
+    case MB_LOG_WARN:
+    case MB_LOG_NOTICE:
+    case MB_LOG_INFO:
+    case MB_LOG_DEBUG:
+        mb_log_level = level;
         break;
     default:
-        mb_tcp_log_level = MB_TCP_LOG_DEF_LEVEL;
+        mb_log_level = MB_LOG_DEF_LEVEL;
     }
 }
 
-mb_tcp_log_level_t mb_tcp_log_get_level(void)
+mb_log_level_t mb_log_get_level(void)
 {
-    return mb_tcp_log_level;
+    return mb_log_level;
 }
 
-void mb_tcp_log_error(const char *msg, ...)
+void mb_log_error(const char *msg, ...)
 {
     va_list arg_list;
 
     va_start(arg_list, msg);
-    if (MB_TCP_LOG_ERROR <= mb_tcp_log_level)
+    if (MB_LOG_ERROR <= mb_log_level)
     {
         printf("Error  : ");
         vprintf(msg, arg_list);
@@ -64,12 +64,12 @@ void mb_tcp_log_error(const char *msg, ...)
     va_end(arg_list);
 }
 
-void mb_tcp_log_warn(const char *msg, ...)
+void mb_log_warn(const char *msg, ...)
 {
     va_list arg_list;
 
     va_start(arg_list, msg);
-    if (MB_TCP_LOG_WARN <= mb_tcp_log_level)
+    if (MB_LOG_WARN <= mb_log_level)
     {
         printf("Warning: ");
         vprintf(msg, arg_list);
@@ -78,12 +78,12 @@ void mb_tcp_log_warn(const char *msg, ...)
     va_end(arg_list);
 }
 
-void mb_tcp_log_notice(const char *msg, ...)
+void mb_log_notice(const char *msg, ...)
 {
     va_list arg_list;
 
     va_start(arg_list, msg);
-    if (MB_TCP_LOG_NOTICE <= mb_tcp_log_level)
+    if (MB_LOG_NOTICE <= mb_log_level)
     {
         printf("Notice : ");
         vprintf(msg, arg_list);
@@ -92,12 +92,12 @@ void mb_tcp_log_notice(const char *msg, ...)
     va_end(arg_list);
 }
 
-void mb_tcp_log_info(const char *msg, ...)
+void mb_log_info(const char *msg, ...)
 {
     va_list arg_list;
 
     va_start(arg_list, msg);
-    if (MB_TCP_LOG_INFO <= mb_tcp_log_level)
+    if (MB_LOG_INFO <= mb_log_level)
     {
         printf("Info   : ");
         vprintf(msg, arg_list);
@@ -106,12 +106,12 @@ void mb_tcp_log_info(const char *msg, ...)
     va_end(arg_list);
 }
 
-void mb_tcp_log_debug(const char *msg, ...)
+void mb_log_debug(const char *msg, ...)
 {
     va_list arg_list;
 
     va_start(arg_list, msg);
-    if (MB_TCP_LOG_DEBUG <= mb_tcp_log_level)
+    if (MB_LOG_DEBUG <= mb_log_level)
     {
         printf("Debug  : ");
         vprintf(msg, arg_list);

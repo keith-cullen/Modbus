@@ -31,7 +31,7 @@
 #include <arpa/inet.h>
 #include <sys/select.h>
 #include "mb_tcp_server.h"
-#include "mb_tcp_log.h"
+#include "mb_log.h"
 
 #define MB_TCP_SERVER_BUF_LEN  128
 #define MB_TCP_SERVER_BACKLOG  10
@@ -48,17 +48,17 @@ static ssize_t mb_tcp_server_send_resp(mb_tcp_server_t *server, int index, mb_tc
         return -EBADMSG;
     }
     mb_tcp_adu_to_str(resp, msg_buf, sizeof(msg_buf));
-    mb_tcp_log_info("[%d] sending: %s", index, msg_buf);
+    mb_log_info("[%d] sending: %s", index, msg_buf);
     return mb_tcp_con_send(&server->con[index], buf, num);
 }
 
 static ssize_t mb_tcp_server_send_err_resp(mb_tcp_server_t *server, int index, mb_tcp_adu_t *req, mb_tcp_adu_t *resp, int error)
 {
-    ssize_t num = 0;
+    int ret = 0;
 
     mb_tcp_adu_set_header(resp, req->trans_id, req->proto_id, MB_TCP_SERVER_UNIT_ID);
-    num = mb_pdu_set_err_resp(&resp->pdu, req->pdu.func_code + 0x80, error);
-    if (num < 0)
+    ret = mb_pdu_set_err_resp(&resp->pdu, req->pdu.func_code + 0x80, error);
+    if (ret < 0)
     {
         return -EBADMSG;
     }
@@ -87,9 +87,9 @@ static size_t mb_tcp_server_con_exchange(mb_tcp_server_t *server, int index)
         return -EBADMSG;
     }
     mb_tcp_adu_to_str(&req, msg_buf, sizeof(msg_buf));
-    mb_tcp_log_info("[%d] received: %s", index, msg_buf);
+    mb_log_info("[%d] received: %s", index, msg_buf);
     mb_tcp_con_consume(con, num);
-    mb_tcp_log_info("[%d] calling handler callback", index);
+    mb_log_info("[%d] calling handler callback", index);
     ret = (*server->handler)(server, &req, &resp);
     if (ret < 0)
     {
@@ -111,7 +111,7 @@ static int mb_tcp_server_find_empty_con(mb_tcp_server_t *server)
         con = &server->con[i];
         if (!mb_tcp_con_is_active(con))
         {
-            mb_tcp_log_debug("found empty connection %d", i);
+            mb_log_debug("found empty connection %d", i);
             return i;
         }
         else if ((oldest == NULL) || (con->last_use < oldest->last_use))
@@ -120,7 +120,7 @@ static int mb_tcp_server_find_empty_con(mb_tcp_server_t *server)
             j = i;
         }
     }
-    mb_tcp_log_debug("closing oldest connection %d", j);
+    mb_log_debug("closing oldest connection %d", j);
     mb_tcp_con_close(oldest);
     return j;
 }
@@ -176,7 +176,7 @@ int mb_tcp_server_create(mb_tcp_server_t *server, const char *host, uint16_t por
         mb_tcp_server_destroy(server);
         return ret;
     }
-    mb_tcp_log_info("bound to address %s and port %d", host, port);
+    mb_log_info("bound to address %s and port %d", host, port);
     return 0;
 }
 
@@ -194,7 +194,7 @@ void mb_tcp_server_destroy(mb_tcp_server_t *server)
 
 int mb_tcp_server_authorise_addr(mb_tcp_server_t *server, const char *str)
 {
-    mb_tcp_log_debug("authorising address %s", str);
+    mb_log_debug("authorising address %s", str);
     return mb_ip_auth_list_add_str(&server->auth, str);
 }
 
@@ -229,7 +229,7 @@ static int mb_tcp_server_handle_new_con(mb_tcp_server_t *server)
     if (ret == 0)
     {
         close(sd);
-        mb_tcp_log_warn("rejecting unauthorised connection with address %s and port %u", buf, ntohs(client_sin.sin_port));
+        mb_log_warn("rejecting unauthorised connection with address %s and port %u", buf, ntohs(client_sin.sin_port));
         return -EACCES;
     }
     p = inet_ntop(AF_INET, &client_sin.sin_addr, buf, sizeof(buf));
@@ -238,7 +238,7 @@ static int mb_tcp_server_handle_new_con(mb_tcp_server_t *server)
         close(sd);
         return -errno;
     }
-    mb_tcp_log_info("connection with address %s and port %u authorised", buf, ntohs(client_sin.sin_port));
+    mb_log_info("connection with address %s and port %u authorised", buf, ntohs(client_sin.sin_port));
     index = mb_tcp_server_find_empty_con(server);
     mb_tcp_con_open(&server->con[index], sd, &client_sin);
     return 0;
@@ -258,7 +258,7 @@ int mb_tcp_server_run(mb_tcp_server_t *server)
     {
         return -errno;
     }
-    mb_tcp_log_notice("listening...");
+    mb_log_notice("listening...");
     while (1)
     {
         FD_ZERO(&read_fds);
@@ -291,7 +291,7 @@ int mb_tcp_server_run(mb_tcp_server_t *server)
                 }
                 else if ((num < 0) && (num != -EAGAIN))
                 {
-                    mb_tcp_log_warn("[%d] exchange: %s", i, strerror(-num));
+                    mb_log_warn("[%d] exchange: %s", i, strerror(-num));
                     mb_tcp_con_close(con);
                 }
             }

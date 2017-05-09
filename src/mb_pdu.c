@@ -46,7 +46,8 @@ int mb_pdu_set_rd_coils_req(mb_pdu_t *pdu, uint16_t start_addr, uint16_t quant_c
     uint32_t end_addr = 0;
 
     memset(pdu, 0, sizeof(mb_pdu_t));
-    if ((quant_coils < MB_PDU_RD_COILS_MIN_QUANT_COILS) || (quant_coils > MB_PDU_RD_COILS_MAX_QUANT_COILS))
+    if ((quant_coils < MB_PDU_RD_COILS_MIN_QUANT_COILS)
+     || (quant_coils > MB_PDU_RD_COILS_MAX_QUANT_COILS))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     end_addr = (uint32_t)start_addr + (uint32_t)quant_coils;
     if (end_addr > MB_PDU_RD_COILS_MAX_ADDR)
@@ -75,7 +76,8 @@ int mb_pdu_set_rd_disc_ips_req(mb_pdu_t *pdu, uint16_t start_addr, uint16_t quan
     uint32_t end_addr = 0;
 
     memset(pdu, 0, sizeof(mb_pdu_t));
-    if ((quant_ips < MB_PDU_RD_DISC_IPS_MIN_QUANT_IPS) || (quant_ips > MB_PDU_RD_DISC_IPS_MAX_QUANT_IPS))
+    if ((quant_ips < MB_PDU_RD_DISC_IPS_MIN_QUANT_IPS)
+     || (quant_ips > MB_PDU_RD_DISC_IPS_MAX_QUANT_IPS))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     end_addr = (uint32_t)start_addr + (uint32_t)quant_ips;
     if (end_addr > MB_PDU_RD_DISC_IPS_MAX_ADDR)
@@ -104,7 +106,8 @@ int mb_pdu_set_rd_hold_regs_req(mb_pdu_t *pdu, uint16_t start_addr, uint16_t qua
     uint32_t end_addr = 0;
 
     memset(pdu, 0, sizeof(mb_pdu_t));
-    if ((quant_regs < MB_PDU_RD_HOLD_REGS_MIN_QUANT_REGS) || (quant_regs > MB_PDU_RD_HOLD_REGS_MAX_QUANT_REGS))
+    if ((quant_regs < MB_PDU_RD_HOLD_REGS_MIN_QUANT_REGS)
+     || (quant_regs > MB_PDU_RD_HOLD_REGS_MAX_QUANT_REGS))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     end_addr = (uint32_t)start_addr + (uint32_t)quant_regs;
     if (end_addr > MB_PDU_RD_HOLD_REGS_MAX_ADDR)
@@ -119,7 +122,8 @@ int mb_pdu_set_rd_hold_regs_req(mb_pdu_t *pdu, uint16_t start_addr, uint16_t qua
 int mb_pdu_set_rd_hold_regs_resp(mb_pdu_t *pdu, uint8_t byte_count, const uint16_t *reg_val)
 {
     memset(pdu, 0, sizeof(mb_pdu_t));
-    if ((byte_count & 0x01) || (byte_count > MB_PDU_RD_HOLD_REGS_MAX_BYTE_COUNT))
+    if ((byte_count & 0x01)
+     || (byte_count > MB_PDU_RD_HOLD_REGS_MAX_BYTE_COUNT))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     pdu->type = MB_PDU_RESP;
     pdu->func_code = MB_PDU_RD_HOLD_REGS;
@@ -133,7 +137,8 @@ int mb_pdu_set_rd_ip_regs_req(mb_pdu_t *pdu, uint16_t start_addr, uint16_t quant
     uint32_t end_addr = 0;
 
     memset(pdu, 0, sizeof(mb_pdu_t));
-    if ((quant_ip_regs < MB_PDU_RD_IP_REGS_MIN_QUANT_IP_REGS) || (quant_ip_regs > MB_PDU_RD_IP_REGS_MAX_QUANT_IP_REGS))
+    if ((quant_ip_regs < MB_PDU_RD_IP_REGS_MIN_QUANT_IP_REGS)
+     || (quant_ip_regs > MB_PDU_RD_IP_REGS_MAX_QUANT_IP_REGS))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     end_addr = (uint32_t)start_addr + (uint32_t)quant_ip_regs;
     if (end_addr > MB_PDU_RD_IP_REGS_MAX_ADDR)
@@ -148,7 +153,8 @@ int mb_pdu_set_rd_ip_regs_req(mb_pdu_t *pdu, uint16_t start_addr, uint16_t quant
 int mb_pdu_set_rd_ip_regs_resp(mb_pdu_t *pdu, uint8_t byte_count, const uint16_t *ip_reg)
 {
     memset(pdu, 0, sizeof(mb_pdu_t));
-    if ((byte_count & 0x001) || (byte_count > MB_PDU_RD_IP_REGS_MAX_BYTE_COUNT))
+    if ((byte_count & 0x001)
+     || (byte_count > MB_PDU_RD_IP_REGS_MAX_BYTE_COUNT))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     pdu->type = MB_PDU_RESP;
     pdu->func_code = MB_PDU_RD_IP_REGS;
@@ -278,7 +284,8 @@ int mb_pdu_set_wr_mult_coils_req(mb_pdu_t *pdu, uint16_t start_addr, uint16_t qu
     uint8_t byte_count = 0;
 
     memset(pdu, 0, sizeof(mb_pdu_t));
-    if ((quant_ops < MB_PDU_WR_MULT_COILS_MIN_QUANT_OPS) || (quant_ops > MB_PDU_WR_MULT_COILS_MAX_QUANT_OPS))
+    if ((quant_ops < MB_PDU_WR_MULT_COILS_MIN_QUANT_OPS)
+     || (quant_ops > MB_PDU_WR_MULT_COILS_MAX_QUANT_OPS))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     end_addr = (uint32_t)start_addr + (uint32_t)quant_ops;
     if (end_addr > MB_PDU_WR_MULT_COILS_MAX_ADDR)
@@ -300,7 +307,8 @@ int mb_pdu_set_wr_mult_coils_resp(mb_pdu_t *pdu, uint16_t start_addr, uint16_t q
     uint32_t end_addr = 0;
 
     memset(pdu, 0, sizeof(mb_pdu_t));
-    if ((quant_ops < MB_PDU_WR_MULT_COILS_MIN_QUANT_OPS) || (quant_ops > MB_PDU_WR_MULT_COILS_MAX_QUANT_OPS))
+    if ((quant_ops < MB_PDU_WR_MULT_COILS_MIN_QUANT_OPS)
+     || (quant_ops > MB_PDU_WR_MULT_COILS_MAX_QUANT_OPS))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     end_addr = (uint32_t)start_addr + (uint32_t)quant_ops;
     if (end_addr > MB_PDU_WR_MULT_COILS_MAX_ADDR)
@@ -317,7 +325,8 @@ int mb_pdu_set_wr_mult_regs_req(mb_pdu_t *pdu, uint16_t start_addr, uint16_t qua
     uint32_t end_addr = 0;
 
     memset(pdu, 0, sizeof(mb_pdu_t));
-    if ((quant_regs < MB_PDU_WR_MULT_REGS_MIN_QUANT_REGS) || (quant_regs > MB_PDU_WR_MULT_REGS_MAX_QUANT_REGS))
+    if ((quant_regs < MB_PDU_WR_MULT_REGS_MIN_QUANT_REGS)
+     || (quant_regs > MB_PDU_WR_MULT_REGS_MAX_QUANT_REGS))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     if (byte_count !=  2 * quant_regs)
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
@@ -338,7 +347,8 @@ int mb_pdu_set_wr_mult_regs_resp(mb_pdu_t *pdu, uint16_t start_addr, uint16_t qu
     uint32_t end_addr = 0;
 
     memset(pdu, 0, sizeof(mb_pdu_t));
-    if ((quant_regs < MB_PDU_WR_MULT_REGS_MIN_QUANT_REGS) || (quant_regs > MB_PDU_WR_MULT_REGS_MAX_QUANT_REGS))
+    if ((quant_regs < MB_PDU_WR_MULT_REGS_MIN_QUANT_REGS)
+     || (quant_regs > MB_PDU_WR_MULT_REGS_MAX_QUANT_REGS))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     end_addr = (uint32_t)start_addr + (uint32_t)quant_regs;
     if (end_addr > MB_PDU_WR_MULT_REGS_MAX_ADDR)
@@ -347,6 +357,30 @@ int mb_pdu_set_wr_mult_regs_resp(mb_pdu_t *pdu, uint16_t start_addr, uint16_t qu
     pdu->func_code = MB_PDU_WR_MULT_REGS;
     pdu->wr_mult_regs_resp.start_addr = start_addr;
     pdu->wr_mult_regs_resp.quant_regs = quant_regs;
+    return 0;
+}
+
+void mb_pdu_set_rep_server_id_req(mb_pdu_t *pdu)
+{
+    memset(pdu, 0, sizeof(mb_pdu_t));
+    pdu->type = MB_PDU_REQ;
+    pdu->func_code = MB_PDU_REP_SERVER_ID;
+}
+
+int mb_pdu_set_rep_server_id_resp(mb_pdu_t *pdu, uint8_t byte_count, const uint8_t *server_id, bool run_ind_status)
+{
+    uint8_t server_id_len = 0;
+
+    memset(pdu, 0, sizeof(mb_pdu_t));
+    if ((byte_count < MB_PDU_REP_SERVER_ID_MIN_BYTE_COUNT)
+     || (byte_count > MB_PDU_REP_SERVER_ID_MAX_BYTE_COUNT))
+        return -MB_PDU_EXCEPT_ILLEGAL_VAL;
+    pdu->type = MB_PDU_RESP;
+    pdu->func_code = MB_PDU_REP_SERVER_ID;
+    pdu->rep_server_id_resp.byte_count = byte_count;
+    server_id_len = byte_count - 1;
+    memcpy(pdu->rep_server_id_resp.server_id, server_id, server_id_len);
+    pdu->rep_server_id_resp.run_ind_status = run_ind_status;
     return 0;
 }
 
@@ -529,12 +563,14 @@ int mb_pdu_set_rd_wr_mult_regs_req(mb_pdu_t *pdu, uint16_t rd_start_addr, uint16
     uint8_t wr_byte_count = 0;
 
     memset(pdu, 0, sizeof(mb_pdu_t));
-    if ((quant_rd < MB_PDU_RD_WR_MULT_REGS_MIN_QUANT_RD) || (quant_rd > MB_PDU_RD_WR_MULT_REGS_MAX_QUANT_RD))
+    if ((quant_rd < MB_PDU_RD_WR_MULT_REGS_MIN_QUANT_RD)
+     || (quant_rd > MB_PDU_RD_WR_MULT_REGS_MAX_QUANT_RD))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     end_addr = (uint32_t)rd_start_addr + (uint32_t)quant_rd;
     if (end_addr > MB_PDU_RD_WR_MULT_REGS_MAX_ADDR)
         return -MB_PDU_EXCEPT_ILLEGAL_ADDR;
-    if ((quant_wr < MB_PDU_RD_WR_MULT_REGS_MIN_QUANT_WR) || (quant_wr > MB_PDU_RD_WR_MULT_REGS_MAX_QUANT_WR))
+    if ((quant_wr < MB_PDU_RD_WR_MULT_REGS_MIN_QUANT_WR)
+     || (quant_wr > MB_PDU_RD_WR_MULT_REGS_MAX_QUANT_WR))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     end_addr = (uint32_t)wr_start_addr + (uint32_t)quant_wr;
     if (end_addr > MB_PDU_RD_WR_MULT_REGS_MAX_ADDR)
@@ -554,7 +590,8 @@ int mb_pdu_set_rd_wr_mult_regs_req(mb_pdu_t *pdu, uint16_t rd_start_addr, uint16
 int mb_pdu_set_rd_wr_mult_regs_resp(mb_pdu_t *pdu, uint8_t byte_count, const uint16_t *rd_reg_val)
 {
     memset(pdu, 0, sizeof(mb_pdu_t));
-    if ((byte_count > MB_PDU_RD_WR_MULT_REGS_MAX_WR_BYTE_COUNT) || (byte_count & 0x01))
+    if ((byte_count > MB_PDU_RD_WR_MULT_REGS_MAX_WR_BYTE_COUNT)
+     || (byte_count & 0x01))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     pdu->type = MB_PDU_RESP;
     pdu->func_code = MB_PDU_RD_WR_MULT_REGS;
@@ -1500,6 +1537,64 @@ static ssize_t mb_pdu_format_wr_mult_regs_resp(mb_pdu_t *pdu, char *buf, size_t 
     return num;
 }
 
+static ssize_t mb_pdu_format_rep_server_id_req(mb_pdu_t *pdu, char *buf, size_t len)
+{
+    ssize_t num = 0;
+
+    /* func_code */
+    if (len < 1)
+        return -MB_PDU_EXCEPT_ILLEGAL_VAL;
+    buf[0] = pdu->func_code;
+    num += 1;
+    buf += 1;
+    len -= 1;
+
+    return num;
+}
+
+static ssize_t mb_pdu_format_rep_server_id_resp(mb_pdu_t *pdu, char *buf, size_t len)
+{
+    uint8_t server_id_len = 0;
+    uint8_t byte_count = 0;
+    ssize_t num = 0;
+
+    /* func_code */
+    if (len < 1)
+        return -MB_PDU_EXCEPT_ILLEGAL_VAL;
+    buf[0] = pdu->func_code;
+    num += 1;
+    buf += 1;
+    len -= 1;
+
+    /* byte_count */
+    if (len < 1)
+        return -MB_PDU_EXCEPT_ILLEGAL_VAL;
+    byte_count = pdu->rep_server_id_resp.byte_count;
+    server_id_len = byte_count - 1;
+    buf[0] = byte_count;
+    num += 1;
+    buf += 1;
+    len -= 1;
+
+    /* server_id */
+    if (len < server_id_len)
+        return -MB_PDU_EXCEPT_ILLEGAL_VAL;
+    memcpy(buf, pdu->rep_server_id_resp.server_id, server_id_len);
+    num += server_id_len;
+    buf += server_id_len;
+    len -= server_id_len;
+
+    /* run_ind_status */
+    if (len < 1)
+        return -MB_PDU_EXCEPT_ILLEGAL_VAL;
+    buf[0] = pdu->rep_server_id_resp.run_ind_status ? 0xff : 0x00;
+    num += 1;
+    buf += 1;
+    len -= 1;
+
+    return num;
+}
+
 static ssize_t mb_pdu_format_rd_file_rec_req(mb_pdu_t *pdu, char *buf, size_t len)
 {
     mb_pdu_rd_file_rec_req_sub_req_t *sub_req = NULL;
@@ -2225,6 +2320,8 @@ ssize_t mb_pdu_format_req(mb_pdu_t *pdu, char *buf, size_t len)
         return mb_pdu_format_wr_mult_coils_req(pdu, buf, len);
     case MB_PDU_WR_MULT_REGS:
         return mb_pdu_format_wr_mult_regs_req(pdu, buf, len);
+    case MB_PDU_REP_SERVER_ID:
+        return mb_pdu_format_rep_server_id_req(pdu, buf, len);
     case MB_PDU_RD_FILE_REC:
         return mb_pdu_format_rd_file_rec_req(pdu, buf, len);
     case MB_PDU_WR_FILE_REC:
@@ -2269,6 +2366,8 @@ ssize_t mb_pdu_format_resp(mb_pdu_t *pdu, char *buf, size_t len)
         return mb_pdu_format_wr_mult_coils_resp(pdu, buf, len);
     case MB_PDU_WR_MULT_REGS:
         return mb_pdu_format_wr_mult_regs_resp(pdu, buf, len);
+    case MB_PDU_REP_SERVER_ID:
+        return mb_pdu_format_rep_server_id_resp(pdu, buf, len);
     case MB_PDU_RD_FILE_REC:
         return mb_pdu_format_rd_file_rec_resp(pdu, buf, len);
     case MB_PDU_WR_FILE_REC:
@@ -2313,7 +2412,8 @@ static ssize_t mb_pdu_parse_rd_coils_req(mb_pdu_t *pdu, const char *buf, size_t 
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     memcpy(&val16, buf, 2);
     quant_coils = ntohs(val16);
-    if ((quant_coils < MB_PDU_RD_COILS_MIN_QUANT_COILS) || (quant_coils > MB_PDU_RD_COILS_MAX_QUANT_COILS))
+    if ((quant_coils < MB_PDU_RD_COILS_MIN_QUANT_COILS)
+     || (quant_coils > MB_PDU_RD_COILS_MAX_QUANT_COILS))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     pdu->rd_coils_req.quant_coils = quant_coils;
     num += 2;
@@ -2378,7 +2478,8 @@ static ssize_t mb_pdu_parse_rd_disc_ips_req(mb_pdu_t *pdu, const char *buf, size
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     memcpy(&val16, buf, 2);
     quant_ips = ntohs(val16);
-    if ((quant_ips < MB_PDU_RD_DISC_IPS_MIN_QUANT_IPS) || (quant_ips > MB_PDU_RD_DISC_IPS_MAX_QUANT_IPS))
+    if ((quant_ips < MB_PDU_RD_DISC_IPS_MIN_QUANT_IPS)
+     || (quant_ips > MB_PDU_RD_DISC_IPS_MAX_QUANT_IPS))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     pdu->rd_disc_ips_req.quant_ips = quant_ips;
     num += 2;
@@ -2443,7 +2544,8 @@ static ssize_t mb_pdu_parse_rd_hold_regs_req(mb_pdu_t *pdu, const char *buf, siz
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     memcpy(&val16, buf, 2);
     quant_regs = ntohs(val16);
-    if ((quant_regs < MB_PDU_RD_HOLD_REGS_MIN_QUANT_REGS) || (quant_regs > MB_PDU_RD_HOLD_REGS_MAX_QUANT_REGS))
+    if ((quant_regs < MB_PDU_RD_HOLD_REGS_MIN_QUANT_REGS)
+     || (quant_regs > MB_PDU_RD_HOLD_REGS_MAX_QUANT_REGS))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     pdu->rd_hold_regs_req.quant_regs = quant_regs;
     num += 2;
@@ -2469,7 +2571,8 @@ static ssize_t mb_pdu_parse_rd_hold_regs_resp(mb_pdu_t *pdu, const char *buf, si
     if (len < 1)
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     byte_count = buf[0];
-    if ((byte_count & 0x01) || (byte_count > MB_PDU_RD_HOLD_REGS_MAX_BYTE_COUNT))
+    if ((byte_count & 0x01)
+     || (byte_count > MB_PDU_RD_HOLD_REGS_MAX_BYTE_COUNT))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     pdu->rd_hold_regs_resp.byte_count = byte_count;
     num += 1;
@@ -2516,7 +2619,8 @@ static ssize_t mb_pdu_parse_rd_ip_regs_req(mb_pdu_t *pdu, const char *buf, size_
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     memcpy(&val16, buf, 2);
     quant_ip_regs = ntohs(val16);
-    if ((quant_ip_regs < MB_PDU_RD_IP_REGS_MIN_QUANT_IP_REGS) || (quant_ip_regs > MB_PDU_RD_IP_REGS_MAX_QUANT_IP_REGS))
+    if ((quant_ip_regs < MB_PDU_RD_IP_REGS_MIN_QUANT_IP_REGS)
+     || (quant_ip_regs > MB_PDU_RD_IP_REGS_MAX_QUANT_IP_REGS))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     pdu->rd_ip_regs_req.quant_ip_regs = quant_ip_regs;
     num += 2;
@@ -2542,7 +2646,8 @@ static ssize_t mb_pdu_parse_rd_ip_regs_resp(mb_pdu_t *pdu, const char *buf, size
     if (len < 1)
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     byte_count = buf[0];
-    if ((byte_count & 0x01) || (byte_count > MB_PDU_RD_IP_REGS_MAX_BYTE_COUNT))
+    if ((byte_count & 0x01)
+     || (byte_count > MB_PDU_RD_IP_REGS_MAX_BYTE_COUNT))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     pdu->rd_ip_regs_resp.byte_count = byte_count;
     num += 1;
@@ -2586,7 +2691,8 @@ static ssize_t mb_pdu_parse_wr_sing_coil_req(mb_pdu_t *pdu, const char *buf, siz
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     memcpy(&val16, buf, 2);
     op_val = ntohs(val16);
-    if ((op_val != 0x0000) && (op_val != 0xff00))
+    if ((op_val != 0x0000)
+     && (op_val != 0xff00))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     pdu->wr_sing_coil_req.op_val = op_val ? true : false;
     num += 2;
@@ -2616,7 +2722,8 @@ static ssize_t mb_pdu_parse_wr_sing_coil_resp(mb_pdu_t *pdu, const char *buf, si
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     memcpy(&val16, buf, 2);
     op_val = ntohs(val16);
-    if ((op_val != 0x0000) && (op_val != 0xff00))
+    if ((op_val != 0x0000)
+     && (op_val != 0xff00))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     pdu->wr_sing_coil_resp.op_val = op_val ? true : false;
     num += 2;
@@ -2711,7 +2818,9 @@ static ssize_t mb_pdu_parse_diag_req(mb_pdu_t *pdu, const char *buf, size_t len)
 
     /* data */
     /* assume that all remaining data in buf belongs to this PDU */
-    if ((len & 0x01) || (len < 2) || (len > MB_PDU_DIAG_MAX_NUM_DATA))
+    if ((len & 0x01)
+     || (len < 2)
+     || (len > MB_PDU_DIAG_MAX_NUM_DATA))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     p = pdu->diag_req.data;
     memcpy(p, buf, len);
@@ -2720,6 +2829,7 @@ static ssize_t mb_pdu_parse_diag_req(mb_pdu_t *pdu, const char *buf, size_t len)
         *p = ntohs(*p);
         p++;
     }
+    pdu->diag_req.num_data = len / 2;
     num += len;
     buf += len;
     len = 0;
@@ -2758,6 +2868,7 @@ static ssize_t mb_pdu_parse_diag_resp(mb_pdu_t *pdu, const char *buf, size_t len
         *p = ntohs(*p);
         p++;
     }
+    pdu->diag_resp.num_data = len / 2;
     num += len;
     buf += len;
     len = 0;
@@ -2875,7 +2986,8 @@ static ssize_t mb_pdu_parse_wr_mult_coils_req(mb_pdu_t *pdu, const char *buf, si
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     memcpy(&val16, buf, 2);
     quant_ops = ntohs(val16);
-    if ((quant_ops < MB_PDU_WR_MULT_COILS_MIN_QUANT_OPS) || (quant_ops > MB_PDU_WR_MULT_COILS_MAX_QUANT_OPS))
+    if ((quant_ops < MB_PDU_WR_MULT_COILS_MIN_QUANT_OPS)
+     || (quant_ops > MB_PDU_WR_MULT_COILS_MAX_QUANT_OPS))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     pdu->wr_mult_coils_req.quant_ops = quant_ops;
     num += 2;
@@ -2935,7 +3047,8 @@ static ssize_t mb_pdu_parse_wr_mult_coils_resp(mb_pdu_t *pdu, const char *buf, s
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     memcpy(&val16, buf, 2);
     quant_ops = ntohs(val16);
-    if ((quant_ops < MB_PDU_WR_MULT_COILS_MIN_QUANT_OPS) || (quant_ops > MB_PDU_WR_MULT_COILS_MAX_QUANT_OPS))
+    if ((quant_ops < MB_PDU_WR_MULT_COILS_MIN_QUANT_OPS)
+     || (quant_ops > MB_PDU_WR_MULT_COILS_MAX_QUANT_OPS))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     pdu->wr_mult_coils_resp.quant_ops = quant_ops;
     num += 2;
@@ -2976,7 +3089,8 @@ static ssize_t mb_pdu_parse_wr_mult_regs_req(mb_pdu_t *pdu, const char *buf, siz
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     memcpy(&val16, buf, 2);
     quant_regs = ntohs(val16);
-    if ((quant_regs < MB_PDU_WR_MULT_REGS_MIN_QUANT_REGS) || (quant_regs > MB_PDU_WR_MULT_REGS_MAX_QUANT_REGS))
+    if ((quant_regs < MB_PDU_WR_MULT_REGS_MIN_QUANT_REGS)
+     || (quant_regs > MB_PDU_WR_MULT_REGS_MAX_QUANT_REGS))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     pdu->wr_mult_regs_req.quant_regs = quant_regs;
     num += 2;
@@ -3016,6 +3130,49 @@ static ssize_t mb_pdu_parse_wr_mult_regs_req(mb_pdu_t *pdu, const char *buf, siz
     return num;
 }
 
+static ssize_t mb_pdu_parse_rep_server_id_resp(mb_pdu_t *pdu, const char *buf, size_t len)
+{
+    uint8_t run_ind_status = 0;
+    uint8_t server_id_len = 0;
+    uint8_t byte_count = 0;
+    ssize_t num = 0;
+
+    /* byte_count */
+    if (len < 1)
+        return -MB_PDU_EXCEPT_ILLEGAL_VAL;
+    byte_count = buf[0];
+    if ((byte_count < MB_PDU_REP_SERVER_ID_MIN_BYTE_COUNT)
+     || (byte_count > MB_PDU_REP_SERVER_ID_MAX_BYTE_COUNT))
+        return -MB_PDU_EXCEPT_ILLEGAL_VAL;
+    pdu->rep_server_id_resp.byte_count = byte_count;
+    num += 1;
+    buf += 1;
+    len -= 1;
+
+    /* server_id */
+    server_id_len = byte_count - 1;
+    if (len < server_id_len)
+        return -MB_PDU_EXCEPT_ILLEGAL_VAL;
+    memcpy(pdu->rep_server_id_resp.server_id, buf, server_id_len);
+    num += server_id_len;
+    buf += server_id_len;
+    len -= server_id_len;
+
+    /* run_ind_status */
+    if (len < 1)
+        return -MB_PDU_EXCEPT_ILLEGAL_VAL;
+    run_ind_status = buf[0];
+    if ((run_ind_status != 0x00)
+     && (run_ind_status != 0xff))
+        return -MB_PDU_EXCEPT_ILLEGAL_VAL;
+    pdu->rep_server_id_resp.run_ind_status = run_ind_status ? true : false;
+    num += 1;
+    buf += 1;
+    len -= 1;
+
+    return num;
+}
+
 static ssize_t mb_pdu_parse_wr_mult_regs_resp(mb_pdu_t *pdu, const char *buf, size_t len)
 {
     uint32_t end_addr = 0;
@@ -3039,7 +3196,8 @@ static ssize_t mb_pdu_parse_wr_mult_regs_resp(mb_pdu_t *pdu, const char *buf, si
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     memcpy(&val16, buf, 2);
     quant_regs = ntohs(val16);
-    if ((quant_regs < MB_PDU_WR_MULT_REGS_MIN_QUANT_REGS) || (quant_regs > MB_PDU_WR_MULT_REGS_MAX_QUANT_REGS))
+    if ((quant_regs < MB_PDU_WR_MULT_REGS_MIN_QUANT_REGS)
+     || (quant_regs > MB_PDU_WR_MULT_REGS_MAX_QUANT_REGS))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     pdu->wr_mult_regs_resp.quant_regs = quant_regs;
     num += 2;
@@ -3068,7 +3226,8 @@ static ssize_t mb_pdu_parse_rd_file_rec_req(mb_pdu_t *pdu, const char *buf, size
     if (len < 1)
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     byte_count = buf[0];
-    if ((byte_count < MB_PDU_RD_FILE_REC_MIN_BYTE_COUNT) || (byte_count > MB_PDU_RD_FILE_REC_MAX_BYTE_COUNT))
+    if ((byte_count < MB_PDU_RD_FILE_REC_MIN_BYTE_COUNT)
+     || (byte_count > MB_PDU_RD_FILE_REC_MAX_BYTE_COUNT))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     pdu->rd_file_rec_req.byte_count = byte_count;
     num += 1;
@@ -3147,7 +3306,8 @@ static ssize_t mb_pdu_parse_rd_file_rec_resp(mb_pdu_t *pdu, const char *buf, siz
     if (len < 1)
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     resp_data_len = buf[0];
-    if ((resp_data_len < MB_PDU_RD_FILE_REC_MIN_RESP_DATA_LEN) || (resp_data_len > MB_PDU_RD_FILE_REC_MAX_RESP_DATA_LEN))
+    if ((resp_data_len < MB_PDU_RD_FILE_REC_MIN_RESP_DATA_LEN)
+     || (resp_data_len > MB_PDU_RD_FILE_REC_MAX_RESP_DATA_LEN))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     pdu->rd_file_rec_resp.resp_data_len = resp_data_len;
     num += 1;
@@ -3162,7 +3322,9 @@ static ssize_t mb_pdu_parse_rd_file_rec_resp(mb_pdu_t *pdu, const char *buf, siz
         if (len < 1)
             return -MB_PDU_EXCEPT_ILLEGAL_VAL;
         file_resp_len = buf[0];
-        if (((file_resp_len & 0x01) == 0) || (file_resp_len < MB_PDU_RD_FILE_REC_MIN_FILE_RESP_LEN) || (file_resp_len > MB_PDU_RD_FILE_REC_MAX_FILE_RESP_LEN))
+        if (((file_resp_len & 0x01) == 0)
+         || (file_resp_len < MB_PDU_RD_FILE_REC_MIN_FILE_RESP_LEN)
+         || (file_resp_len > MB_PDU_RD_FILE_REC_MAX_FILE_RESP_LEN))
             return -MB_PDU_EXCEPT_ILLEGAL_ADDR;
         sub_req.file_resp_len = file_resp_len;
         num += 1;
@@ -3219,7 +3381,8 @@ static ssize_t mb_pdu_parse_wr_file_rec_req(mb_pdu_t *pdu, const char *buf, size
     if (len < 1)
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     req_data_len = buf[0];
-    if ((req_data_len < MB_PDU_WR_FILE_REC_MIN_REQ_DATA_LEN) || (req_data_len > MB_PDU_WR_FILE_REC_MAX_REQ_DATA_LEN))
+    if ((req_data_len < MB_PDU_WR_FILE_REC_MIN_REQ_DATA_LEN)
+     || (req_data_len > MB_PDU_WR_FILE_REC_MAX_REQ_DATA_LEN))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     pdu->wr_file_rec_req.req_data_len = req_data_len;
     num += 1;
@@ -3318,7 +3481,8 @@ static ssize_t mb_pdu_parse_wr_file_rec_resp(mb_pdu_t *pdu, const char *buf, siz
     if (len < 1)
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     resp_data_len = buf[0];
-    if ((resp_data_len < MB_PDU_WR_FILE_REC_MIN_RESP_DATA_LEN) || (resp_data_len > MB_PDU_WR_FILE_REC_MAX_RESP_DATA_LEN))
+    if ((resp_data_len < MB_PDU_WR_FILE_REC_MIN_RESP_DATA_LEN)
+     || (resp_data_len > MB_PDU_WR_FILE_REC_MAX_RESP_DATA_LEN))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     pdu->wr_file_rec_resp.resp_data_len = resp_data_len;
     num += 1;
@@ -3499,7 +3663,8 @@ static ssize_t mb_pdu_parse_rd_wr_mult_regs_req(mb_pdu_t *pdu, const char *buf, 
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     memcpy(&val16, buf, 2);
     quant_rd = ntohs(val16);
-    if ((quant_rd < MB_PDU_RD_WR_MULT_REGS_MIN_QUANT_RD) || (quant_rd > MB_PDU_RD_WR_MULT_REGS_MAX_QUANT_RD))
+    if ((quant_rd < MB_PDU_RD_WR_MULT_REGS_MIN_QUANT_RD)
+     || (quant_rd > MB_PDU_RD_WR_MULT_REGS_MAX_QUANT_RD))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     pdu->rd_wr_mult_regs_req.quant_rd = quant_rd;
     num += 2;
@@ -3525,7 +3690,8 @@ static ssize_t mb_pdu_parse_rd_wr_mult_regs_req(mb_pdu_t *pdu, const char *buf, 
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     memcpy(&val16, buf, 2);
     quant_wr = ntohs(val16);
-    if ((quant_wr < MB_PDU_RD_WR_MULT_REGS_MIN_QUANT_WR) || (quant_wr > MB_PDU_RD_WR_MULT_REGS_MAX_QUANT_WR))
+    if ((quant_wr < MB_PDU_RD_WR_MULT_REGS_MIN_QUANT_WR)
+     || (quant_wr > MB_PDU_RD_WR_MULT_REGS_MAX_QUANT_WR))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     pdu->rd_wr_mult_regs_req.quant_wr = quant_wr;
     num += 2;
@@ -3576,7 +3742,8 @@ static ssize_t mb_pdu_parse_rd_wr_mult_regs_resp(mb_pdu_t *pdu, const char *buf,
     if (len < 1)
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     byte_count = buf[0];
-    if ((byte_count & 0x01) || (byte_count > MB_PDU_RD_WR_MULT_REGS_MAX_RD_BYTE_COUNT))
+    if ((byte_count & 0x01)
+     || (byte_count > MB_PDU_RD_WR_MULT_REGS_MAX_RD_BYTE_COUNT))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     pdu->rd_wr_mult_regs_resp.byte_count = byte_count;
     num += 1;
@@ -3632,7 +3799,8 @@ static ssize_t mb_pdu_parse_rd_fifo_q_resp(mb_pdu_t *pdu, const char *buf, size_
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     memcpy(&val16, buf, 2);
     byte_count = ntohs(val16);
-    if ((byte_count & 0x0001) || (byte_count > MB_PDU_RD_FIFO_Q_MAX_BYTE_COUNT))
+    if ((byte_count & 0x0001)
+     || (byte_count > MB_PDU_RD_FIFO_Q_MAX_BYTE_COUNT))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     pdu->rd_fifo_q_resp.byte_count = byte_count;
     num += 2;
@@ -3644,7 +3812,8 @@ static ssize_t mb_pdu_parse_rd_fifo_q_resp(mb_pdu_t *pdu, const char *buf, size_
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     memcpy(&val16, buf, 2);
     fifo_count = ntohs(val16);
-    if (((fifo_count + 1) * 2 != byte_count) || (fifo_count > MB_PDU_RD_FIFO_Q_MAX_FIFO_COUNT))
+    if (((fifo_count + 1) * 2 != byte_count)
+     || (fifo_count > MB_PDU_RD_FIFO_Q_MAX_FIFO_COUNT))
         return -MB_PDU_EXCEPT_ILLEGAL_VAL;
     pdu->rd_fifo_q_resp.fifo_count = fifo_count;
     num += 2;
@@ -3797,6 +3966,8 @@ ssize_t mb_pdu_parse_req(mb_pdu_t *pdu, const char *buf, size_t len)
     case MB_PDU_WR_MULT_REGS:
         ret = mb_pdu_parse_wr_mult_regs_req(pdu, buf, len);
         break;
+    case MB_PDU_REP_SERVER_ID:
+        break;
     case MB_PDU_RD_FILE_REC:
         ret = mb_pdu_parse_rd_file_rec_req(pdu, buf, len);
         break;
@@ -3877,6 +4048,9 @@ ssize_t mb_pdu_parse_resp(mb_pdu_t *pdu, const char *buf, size_t len)
         break;
     case MB_PDU_WR_MULT_REGS:
         ret = mb_pdu_parse_wr_mult_regs_resp(pdu, buf, len);
+        break;
+    case MB_PDU_REP_SERVER_ID:
+        ret = mb_pdu_parse_rep_server_id_resp(pdu, buf, len);
         break;
     case MB_PDU_RD_FILE_REC:
         ret = mb_pdu_parse_rd_file_rec_resp(pdu, buf, len);

@@ -25,8 +25,8 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <stddef.h>
 #include <stdio.h>
-#include <string.h>
 #include "mb_ip_auth.h"
 #include "mb_test.h"
 

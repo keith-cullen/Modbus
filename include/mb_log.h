@@ -25,27 +25,27 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef MB_TCP_LOG_H
-#define MB_TCP_LOG_H
+#ifndef MB_LOG_H
+#define MB_LOG_H
 
-#define MB_TCP_LOG_DEF_LEVEL  MB_TCP_LOG_ERROR
+#define MB_LOG_DEF_LEVEL  MB_LOG_ERROR
 
 typedef enum
 {
-    MB_TCP_LOG_ERROR = 0,
-    MB_TCP_LOG_WARN = 1,
-    MB_TCP_LOG_NOTICE = 2,
-    MB_TCP_LOG_INFO = 3,
-    MB_TCP_LOG_DEBUG = 4
+    MB_LOG_ERROR = 0,
+    MB_LOG_WARN = 1,
+    MB_LOG_NOTICE = 2,
+    MB_LOG_INFO = 3,
+    MB_LOG_DEBUG = 4
 }
-mb_tcp_log_level_t;
+mb_log_level_t;
 
-void mb_tcp_log_set_level(mb_tcp_log_level_t level);
-mb_tcp_log_level_t mb_tcp_log_get_level(void);
-void mb_tcp_log_error(const char *msg, ...);
-void mb_tcp_log_warn(const char *msg, ...);
-void mb_tcp_log_notice(const char *msg, ...);
-void mb_tcp_log_info(const char *msg, ...);
-void mb_tcp_log_debug(const char *msg, ...);
+void mb_log_set_level(mb_log_level_t level);
+mb_log_level_t mb_log_get_level(void);
+void mb_log_error(const char *msg, ...);
+void mb_log_warn(const char *msg, ...);
+void mb_log_notice(const char *msg, ...);
+void mb_log_info(const char *msg, ...);
+void mb_log_debug(const char *msg, ...);
 
 #endif

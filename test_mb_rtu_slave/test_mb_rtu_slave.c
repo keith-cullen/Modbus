@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Keith Cullen.
+ * Copyright (c) 2017 Keith Cullen.
  * All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,21 +27,17 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <stdint.h>
-#include "mb_tcp_server.h"
-#include "mb_tcp_adu.h"
+#include "mb_rtu_slave.h"
+#include "mb_rtu_adu.h"
 #include "mb_log.h"
 
-#define HOST_ADDR  "127.0.0.1"
-#define HOST_PORT  10000        /* using the standard port 502 requires root privileges */
-#define AUTH_ADDR  "127.0.0.1"  /* authorised client address */
-
+#define SLAVE_ADDR      1
 #define HOLD_REG_ADDR   0x0
 #define HOLD_REG_QUANT  1
 
 uint16_t hold_reg = 0x1234;
 
-static int handle(mb_tcp_server_t *server, mb_tcp_adu_t *req, mb_tcp_adu_t *resp)
+static int handle(mb_rtu_slave_t *slave, mb_rtu_adu_t *req, mb_rtu_adu_t *resp)
 {
     int ret = 0;
 
@@ -56,45 +52,54 @@ static int handle(mb_tcp_server_t *server, mb_tcp_adu_t *req, mb_tcp_adu_t *resp
         {
             return -MB_PDU_EXCEPT_ILLEGAL_VAL;
         }
-        mb_tcp_adu_set_header(resp, req->trans_id, req->proto_id, MB_TCP_SERVER_UNIT_ID);
+        mb_rtu_adu_set_header(resp, req->addr);
         ret = mb_pdu_set_rd_hold_regs_resp(&resp->pdu, HOLD_REG_QUANT * 2, &hold_reg);
         if (ret < 0)
         {
             return -MB_PDU_EXCEPT_SERVER_DEV_FAIL;
         }
-        return ret;
+        return 0;
+    case MB_PDU_WR_SING_REG:
+        if (req->pdu.wr_sing_reg_req.reg_addr != HOLD_REG_ADDR)
+        {
+            return -MB_PDU_EXCEPT_ILLEGAL_ADDR;
+        }
+        hold_reg = req->pdu.wr_sing_reg_req.reg_val;
+        mb_rtu_adu_set_header(resp, req->addr);
+        mb_pdu_set_wr_sing_reg_req(&resp->pdu, HOLD_REG_ADDR, hold_reg);
+        return 0;
     default:
         return -MB_PDU_EXCEPT_ILLEGAL_FUNC;
     }
     return 0;  /* should never reach here */
 }
 
-int main(void)
+int main(int argc, char **argv)
 {
-    mb_tcp_server_t server = {0};
+    mb_rtu_slave_t slave = {0};
+    const char *dev = NULL;
     int ret = 0;
 
     mb_log_set_level(MB_LOG_DEBUG);
-    ret = mb_tcp_server_create(&server, HOST_ADDR, HOST_PORT, handle);
-    if (ret < 0)
+    if (argc != 2)
     {
-        mb_log_error("failed to create server: %s", strerror(-ret));
+        mb_log_info("usage: test_mb_rtu_slave dev\n");
         return EXIT_FAILURE;
     }
-    ret = mb_tcp_server_authorise_addr(&server, AUTH_ADDR);
+    dev = argv[1];
+    ret = mb_rtu_slave_create(&slave, dev, SLAVE_ADDR, handle);
     if (ret < 0)
     {
-        mb_log_error("failed to authorise client address: %s", strerror(-ret));
-        mb_tcp_server_destroy(&server);
+        mb_log_error("failed to create slave: %s\n", strerror(-ret));
         return EXIT_FAILURE;
     }
-    ret = mb_tcp_server_run(&server);
+    ret = mb_rtu_slave_run(&slave);
     if (ret < 0)
     {
-        mb_log_error("failed to run server: %s", strerror(-ret));
-        mb_tcp_server_destroy(&server);
+        mb_log_error("failed to run slave: %s\n", strerror(-ret));
+        mb_rtu_slave_destroy(&slave);
         return EXIT_FAILURE;
     }
-    mb_tcp_server_destroy(&server);
+    mb_rtu_slave_destroy(&slave);
     return EXIT_SUCCESS;
 }
