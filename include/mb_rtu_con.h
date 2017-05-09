@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Keith Cullen.
+ * Copyright (c) 2017 Keith Cullen.
  * All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,30 +25,35 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef MB_TCP_CLIENT_H
-#define MB_TCP_CLIENT_H
+#ifndef MB_RTU_CON_H
+#define MB_RTU_CON_H
 
+#include <stddef.h>
 #include <time.h>
-#include <netinet/in.h>
-#include "mb_ip_auth.h"
-#include "mb_tcp_con.h"
-#include "mb_tcp_adu.h"
+#include <termios.h>
+#include <sys/types.h>
+#include "mb_rtu_adu.h"
 
-#define MB_TCP_CLIENT_MAX_CON        4
-#define MB_TCP_CLIENT_SOCKET_CLOSED  0
-#define MB_TCP_CLIENT_UNIT_ID        0xff  /* unit id used in client requests */
+#define MB_RTU_CON_BAUD_RATE  B19200
+#define MB_RTU_CON_T15_SEC    0
+#define MB_RTU_CON_T15_NSEC   859375
+#define MB_RTU_CON_T35_SEC    0
+#define MB_RTU_CON_T35_NSEC   2005208
 
 typedef struct
 {
-    mb_ip_auth_list_t auth;
-    mb_tcp_con_t con[MB_TCP_CLIENT_MAX_CON];
-    struct timeval timeout;
+    int serial_fd;
+    int t15_fd;
+    int t35_fd;
 }
-mb_tcp_client_t;
+mb_rtu_con_t;
 
-void mb_tcp_client_create(mb_tcp_client_t *client, struct timeval timeout);
-void mb_tcp_client_destroy(mb_tcp_client_t *client);
-int mb_tcp_client_authorise_addr(mb_tcp_client_t *client, const char *str);
-int mb_tcp_client_exchange(mb_tcp_client_t *client, const char *host, in_port_t port, mb_tcp_adu_t *req, mb_tcp_adu_t *resp);
+int mb_rtu_con_create(mb_rtu_con_t *con, const char *dev);
+void mb_rtu_con_destroy(mb_rtu_con_t *con);
+int mb_rtu_con_start_timer(int fd, time_t sec, long nsec);
+int mb_rtu_con_read_timer(int fd);
+ssize_t mb_rtu_con_send(mb_rtu_con_t *con, const char *buf, size_t len);
+ssize_t mb_rtu_con_recv(mb_rtu_con_t *con, char *buf, size_t len);
+ssize_t mb_rtu_con_recv_timeout(mb_rtu_con_t *con, char *buf, size_t len, int timer_fd);
 
 #endif

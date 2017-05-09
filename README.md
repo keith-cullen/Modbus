@@ -1,7 +1,7 @@
 Modbus Protocol
 ===============
 
-Copyright (c) 2016 Keith Cullen.
+Copyright (c) 2016 - 2017 Keith Cullen
 
 
 To test the PDU library
@@ -13,6 +13,14 @@ $ make
 
 $ ./test_mb_pdu
 
+To test the RTU ADU library
+---------------------------
+
+$ cd test_mb_rtu_adu
+
+$ make
+
+$ ./test_mb_rtu_adu
 
 To test the TCP ADU library
 ---------------------------
@@ -23,7 +31,6 @@ $ make
 
 $ ./test_mb_tcp_adu
 
-
 To test the IP authentication library
 -------------------------------------
 
@@ -33,6 +40,26 @@ $ make
 
 $ ./test_mb_ip_auth
 
+To test the RTU master/slave
+----------------------------
+
+$ socat -d -d pty,raw,echo=0 pty,raw,echo=0
+
+(In a different terminal)
+
+$ cd test_mb_rtu_slave
+
+$ make
+
+$ ./test_mb_rtu_slave /dev/pts/2
+
+(In a different terminal)
+
+$ cd test_mb_rtu_master
+
+$ make
+
+$ ./test_mb_rtu_master /dev/pts/3
 
 To test the TCP client/server
 -----------------------------
@@ -58,7 +85,7 @@ Supported Protocol Versions
 | Protocol Version                                        | Supported |
 |---------------------------------------------------------|-----------|
 | Modbus TCP                                              | yes       |
-| Modbus RTU                                              | no        |
+| Modbus RTU                                              | yes       |
 | Modbus ASCII                                            | no        |
 
 
@@ -79,7 +106,7 @@ Supported Function Codes
 | (0x0c) Get Comm Event Log (Serial Line Only)            | yes       |
 | (0x0f) Write Multiple Coils                             | yes       |
 | (0x10) Write Multiple Registers                         | yes       |
-| (0x11) Report Server ID (Serial Line Only)              | no        |
+| (0x11) Report Server ID (Serial Line Only)              | yes       |
 | (0x14) Read File Record                                 | yes       |
 | (0x15) Write File Record                                | yes       |
 | (0x16) Mask Write Register                              | yes       |

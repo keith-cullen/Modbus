@@ -32,7 +32,6 @@
 #include <time.h>
 #include <netinet/in.h>
 #include <sys/types.h>
-#include <sys/socket.h>
 #include "mb_tcp_adu.h"
 
 #define MB_TCP_CON_SOCKET_CLOSED  0

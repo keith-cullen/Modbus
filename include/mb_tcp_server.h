@@ -28,11 +28,9 @@
 #ifndef MB_TCP_SERVER_H
 #define MB_TCP_SERVER_H
 
-#include <stdint.h>
-#include <time.h>
 #include <netinet/in.h>
-#include "mb_tcp_con.h"
 #include "mb_ip_auth.h"
+#include "mb_tcp_con.h"
 #include "mb_tcp_adu.h"
 
 #define MB_TCP_SERVER_MAX_CON        4
@@ -52,7 +50,7 @@ typedef struct mb_tcp_server
 }
 mb_tcp_server_t;
 
-int mb_tcp_server_create(mb_tcp_server_t *server, const char *host, uint16_t port, mb_tcp_server_handler_t handler);
+int mb_tcp_server_create(mb_tcp_server_t *server, const char *host, in_port_t port, mb_tcp_server_handler_t handler);
 void mb_tcp_server_destroy(mb_tcp_server_t *server);
 int mb_tcp_server_authorise_addr(mb_tcp_server_t *server, const char *str);
 int mb_tcp_server_run(mb_tcp_server_t *server);

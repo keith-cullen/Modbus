@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Keith Cullen.
+ * Copyright (c) 2017 Keith Cullen.
  * All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,30 +25,47 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef MB_TCP_CLIENT_H
-#define MB_TCP_CLIENT_H
+#ifndef MB_RTU_ADU_H
+#define MB_RTU_ADU_H
 
-#include <time.h>
-#include <netinet/in.h>
-#include "mb_ip_auth.h"
-#include "mb_tcp_con.h"
-#include "mb_tcp_adu.h"
+#include <stddef.h>
+#include <stdint.h>
+#include <sys/types.h>
+#include "mb_pdu.h"
 
-#define MB_TCP_CLIENT_MAX_CON        4
-#define MB_TCP_CLIENT_SOCKET_CLOSED  0
-#define MB_TCP_CLIENT_UNIT_ID        0xff  /* unit id used in client requests */
+/*  RTU application data unit
+ *
+ *  0         1           2      N    N+2
+ *  +---------+-----------+------+-----+
+ *  | address | func_code | data | CRC |
+ *  +---------+-----------+------+-----+
+ *                        |<---->|
+ *                        0 to 252
+ *  N   <= 254
+ *  N+2 <= 256
+ */
 
+#define MB_RTU_ADU_MIN_LEN           3
+#define MB_RTU_ADU_MAX_LEN           256
+#define MB_RTU_ADU_BROADCAST_ADDR    0
+#define MB_RTU_ADU_MIN_UNICAST_ADDR  1
+#define MB_RTU_ADU_MAX_UNICAST_ADDR  247
+
+/* Application Protocol Data Unit */
 typedef struct
 {
-    mb_ip_auth_list_t auth;
-    mb_tcp_con_t con[MB_TCP_CLIENT_MAX_CON];
-    struct timeval timeout;
+    uint8_t addr;
+    mb_pdu_t pdu;
 }
-mb_tcp_client_t;
+mb_rtu_adu_t;
 
-void mb_tcp_client_create(mb_tcp_client_t *client, struct timeval timeout);
-void mb_tcp_client_destroy(mb_tcp_client_t *client);
-int mb_tcp_client_authorise_addr(mb_tcp_client_t *client, const char *str);
-int mb_tcp_client_exchange(mb_tcp_client_t *client, const char *host, in_port_t port, mb_tcp_adu_t *req, mb_tcp_adu_t *resp);
+int mb_rtu_adu_check_crc(const uint8_t *buf, size_t len);
+int mb_rtu_adu_valid_broadcast_req(mb_rtu_adu_t *adu);
+void mb_rtu_adu_set_header(mb_rtu_adu_t *adu, uint8_t addr);
+ssize_t mb_rtu_adu_format_req(mb_rtu_adu_t *adu, char *buf, size_t len);
+ssize_t mb_rtu_adu_format_resp(mb_rtu_adu_t *adu, char *buf, size_t len);
+ssize_t mb_rtu_adu_parse_req(mb_rtu_adu_t *adu, const char *buf, size_t len);
+ssize_t mb_rtu_adu_parse_resp(mb_rtu_adu_t *adu, const char *buf, size_t len);
+int mb_rtu_adu_to_str(mb_rtu_adu_t *adu, char *buf, size_t len);
 
 #endif

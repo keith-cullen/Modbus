@@ -71,6 +71,9 @@
 #define MB_PDU_WR_MULT_REGS_MAX_ADDR              0x0000ffff
 #define MB_PDU_WR_MULT_REGS_MIN_QUANT_REGS        1
 #define MB_PDU_WR_MULT_REGS_MAX_QUANT_REGS        123
+#define MB_PDU_REP_SERVER_ID_MIN_BYTE_COUNT       1
+#define MB_PDU_REP_SERVER_ID_MAX_BYTE_COUNT       251
+#define MB_PDU_REP_SERVER_ID_MAX_DATA_LEN         250
 #define MB_PDU_FILE_REC_REF_TYPE                  0x06
 #define MB_PDU_FILE_REC_MIN_FILE_NUM              1
 #define MB_PDU_FILE_REC_MAX_REC_NUM               0x270f
@@ -138,7 +141,7 @@ typedef enum
     MB_PDU_GET_COM_EV_LOG = 0x0c,             /* Get Com Event Log */
     MB_PDU_WR_MULT_COILS = 0x0f,              /* Write Multiple Coils */
     MB_PDU_WR_MULT_REGS = 0x10,               /* Write Multiple Registers */
-    MB_PDU_REP_SRVR_ID = 0x11,                /* Report Server ID */
+    MB_PDU_REP_SERVER_ID = 0x11,              /* Report Server ID */
     MB_PDU_RD_FILE_REC = 0x14,                /* Read File Record */
     MB_PDU_WR_FILE_REC = 0x15,                /* Write File Record */
     MB_PDU_MASK_WR_REG = 0x16,                /* Mask Write Register */
@@ -148,9 +151,17 @@ typedef enum
 }
 mb_pdu_func_code_t;
 
+/* Modbus over Serial Line Specification and Implementation Guide V1.02 */
+/* Modbus Application Protocol Specification V1.1b3 */
 typedef enum
 {
-    MB_PDU_SERVER_MSG_CNT = 0x0e              /* Server Message Count */
+    MB_PDU_QUERY_DATA = 0x00,                 /* Return Query Data */
+    MB_PDU_CLEAR_COUNTERS = 0x0a,             /* Clear Counters and Diagnostic Register */
+    MB_PDU_BUS_MSG_COUNT = 0x0b,              /* Return Bus Message Count */
+    MB_PDU_BUS_COM_ERR_COUNT = 0x0c,          /* Return Bus Communication Error Count */
+    MB_PDU_SLAVE_EXCEP_ERR_COUNT = 0x0d,      /* Slave Exception Error Count */
+    MB_PDU_SLAVE_MSG_COUNT = 0x0e,            /* Slave Message Count */
+    MB_PDU_SLAVE_NO_RESP_COUNT = 0x0f         /* Slave No Response Count */
 }
 mb_pdu_diag_sub_func_code_t;
 
@@ -310,6 +321,19 @@ mb_pdu_wr_mult_regs_resp_t;
 
 typedef struct
 {
+}
+mb_pdu_rep_server_id_req_t;
+
+typedef struct
+{
+    uint8_t byte_count;
+    uint8_t server_id[MB_PDU_REP_SERVER_ID_MAX_DATA_LEN - 1];
+    bool run_ind_status;
+}
+mb_pdu_rep_server_id_resp_t;
+
+typedef struct
+{
     uint8_t ref_type;
     uint16_t file_num;
     uint16_t rec_num;
@@ -448,6 +472,8 @@ typedef struct
         mb_pdu_wr_mult_coils_resp_t wr_mult_coils_resp;
         mb_pdu_wr_mult_regs_req_t wr_mult_regs_req;
         mb_pdu_wr_mult_regs_resp_t wr_mult_regs_resp;
+        mb_pdu_rep_server_id_req_t rep_server_id_req;
+        mb_pdu_rep_server_id_resp_t rep_server_id_resp;
         mb_pdu_rd_file_rec_req_t rd_file_rec_req;
         mb_pdu_rd_file_rec_resp_t rd_file_rec_resp;
         mb_pdu_wr_file_rec_req_t wr_file_rec_req;
@@ -491,6 +517,8 @@ int mb_pdu_set_wr_mult_coils_req(mb_pdu_t *pdu, uint16_t start_addr, uint16_t qu
 int mb_pdu_set_wr_mult_coils_resp(mb_pdu_t *pdu, uint16_t start_addr, uint16_t quant_ops);
 int mb_pdu_set_wr_mult_regs_req(mb_pdu_t *pdu, uint16_t start_addr, uint16_t quant_regs, uint8_t byte_count, const uint16_t *reg_val);
 int mb_pdu_set_wr_mult_regs_resp(mb_pdu_t *pdu, uint16_t start_addr, uint16_t quant_regs);
+void mb_pdu_set_rep_server_id_req(mb_pdu_t *pdu);
+int mb_pdu_set_rep_server_id_resp(mb_pdu_t *pdu, uint8_t byte_count, const uint8_t *server_id, bool run_ind_status);
 int mb_pdu_set_rd_file_rec_req(mb_pdu_t *pdu, const mb_pdu_rd_file_rec_req_sub_req_t *sub_req, size_t num_sub_req);
 int mb_pdu_set_rd_file_rec_resp(mb_pdu_t *pdu, const mb_pdu_rd_file_rec_resp_sub_req_t *sub_req, size_t num_sub_req);
 int mb_pdu_set_wr_file_rec_req(mb_pdu_t *pdu, const mb_pdu_wr_file_rec_sub_req_t *sub_req, size_t num_sub_req);

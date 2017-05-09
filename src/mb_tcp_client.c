@@ -30,7 +30,7 @@
 #include <arpa/inet.h>
 #include <sys/select.h>
 #include "mb_tcp_client.h"
-#include "mb_tcp_log.h"
+#include "mb_log.h"
 
 static ssize_t mb_tcp_client_con_exchange(mb_tcp_client_t *client, int index, mb_tcp_adu_t *req, mb_tcp_adu_t *resp)
 {
@@ -49,7 +49,7 @@ static ssize_t mb_tcp_client_con_exchange(mb_tcp_client_t *client, int index, mb
         return -EBADMSG;  /* convert modbus error to errno value */
     }
     mb_tcp_adu_to_str(req, msg_buf, sizeof(msg_buf));
-    mb_tcp_log_info("[%d] sending: %s", index, msg_buf);
+    mb_log_info("[%d] sending: %s", index, msg_buf);
     num = mb_tcp_con_send(con, buf, num);
     if (num <= 0)
     {
@@ -90,7 +90,7 @@ static ssize_t mb_tcp_client_con_exchange(mb_tcp_client_t *client, int index, mb
     }
     mb_tcp_con_consume(con, num);
     mb_tcp_adu_to_str(resp, msg_buf, sizeof(msg_buf));
-    mb_tcp_log_info("[%d] received: %s", index, msg_buf);
+    mb_log_info("[%d] received: %s", index, msg_buf);
     return num;
 }
 
@@ -104,11 +104,11 @@ static int mb_tcp_client_find_con(mb_tcp_client_t *client, struct sockaddr_in *s
         con = &client->con[i];
         if (memcmp(&con->sin, sin, sizeof(struct sockaddr_in)) == 0)
         {
-            mb_tcp_log_debug("found existing connection %d", i);
+            mb_log_debug("found existing connection %d", i);
             return i;
         }
     }
-    mb_tcp_log_debug("no existing connection found");
+    mb_log_debug("no existing connection found");
     return -1;
 }
 
@@ -124,7 +124,7 @@ static int mb_tcp_client_find_empty_con(mb_tcp_client_t *client)
         con = &client->con[i];
         if (!mb_tcp_con_is_active(con))
         {
-            mb_tcp_log_debug("found empty connection %d", i);
+            mb_log_debug("found empty connection %d", i);
             return i;
         }
         else if ((oldest == NULL) || (con->last_use < oldest->last_use))
@@ -133,7 +133,7 @@ static int mb_tcp_client_find_empty_con(mb_tcp_client_t *client)
             j = i;
         }
     }
-    mb_tcp_log_debug("closing oldest connection %d", j);
+    mb_log_debug("closing oldest connection %d", j);
     mb_tcp_con_close(con);
     return j;
 }
@@ -161,7 +161,7 @@ void mb_tcp_client_destroy(mb_tcp_client_t *client)
 
 int mb_tcp_client_authorise_addr(mb_tcp_client_t *client, const char *str)
 {
-    mb_tcp_log_debug("authorising address %s", str);
+    mb_log_debug("authorising address %s", str);
     return mb_ip_auth_list_add_str(&client->auth, str);
 }
 
@@ -191,7 +191,7 @@ static int mb_tcp_client_con_open(mb_tcp_client_t *client, int index, struct soc
     return 0;
 }
 
-int mb_tcp_client_exchange(mb_tcp_client_t *client, const char *host, int16_t port, mb_tcp_adu_t *req, mb_tcp_adu_t *resp)
+int mb_tcp_client_exchange(mb_tcp_client_t *client, const char *host, in_port_t port, mb_tcp_adu_t *req, mb_tcp_adu_t *resp)
 {
     struct sockaddr_in server_sin = {0};
     ssize_t num = 0;
@@ -219,11 +219,11 @@ int mb_tcp_client_exchange(mb_tcp_client_t *client, const char *host, int16_t po
         }
         else if (num < 0)
         {
-            mb_tcp_log_warn("exchange: %s", strerror(-num));
+            mb_log_warn("exchange: %s", strerror(-num));
         }
         mb_tcp_con_close(&client->con[index]);
     }
-    mb_tcp_log_debug("attempting to establish new connection");
+    mb_log_debug("attempting to establish new connection");
     ret = mb_ip_auth_list_check_addr(&client->auth, &server_sin.sin_addr);
     if (ret < 0)
     {
@@ -231,10 +231,10 @@ int mb_tcp_client_exchange(mb_tcp_client_t *client, const char *host, int16_t po
     }
     if (ret == 0)
     {
-        mb_tcp_log_warn("rejecting unauthorised connection to address %s and port %u", host, port);
+        mb_log_warn("rejecting unauthorised connection to address %s and port %u", host, port);
         return -EACCES;
     }
-    mb_tcp_log_info("connection with address %s and port %u authorised", host, port);
+    mb_log_info("connection with address %s and port %u authorised", host, port);
     index = mb_tcp_client_find_empty_con(client);
     ret = mb_tcp_client_con_open(client, index, &server_sin);
     if (ret < 0)
@@ -244,7 +244,7 @@ int mb_tcp_client_exchange(mb_tcp_client_t *client, const char *host, int16_t po
     num = mb_tcp_client_con_exchange(client, index, req, resp);
     if (num == 0)
     {
-        mb_tcp_log_info("[%d] connection closed remotely", index);
+        mb_log_info("[%d] connection closed remotely", index);
         mb_tcp_con_close(&client->con[index]);
     }
     else if (num < 0)

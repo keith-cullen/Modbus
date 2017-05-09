@@ -29,8 +29,9 @@
 #include <errno.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <sys/socket.h>
 #include "mb_tcp_con.h"
-#include "mb_tcp_log.h"
+#include "mb_log.h"
 
 static int mb_tcp_con_rx_complete(mb_tcp_con_t *con)
 {
@@ -83,14 +84,14 @@ void mb_tcp_con_open(mb_tcp_con_t *con, int sd, struct sockaddr_in *sin)
     con->sd = sd;
     con->last_use = time(NULL);
     memcpy(&con->sin, sin, sizeof(struct sockaddr_in));
-    mb_tcp_log_info("[%d] connection opened", con->index);
+    mb_log_info("[%d] connection opened", con->index);
 }
 
 void mb_tcp_con_close(mb_tcp_con_t *con)
 {
     close(con->sd);
     con->sd = MB_TCP_CON_SOCKET_CLOSED;
-    mb_tcp_log_info("[%d] connection closed locally", con->index);
+    mb_log_info("[%d] connection closed locally", con->index);
 }
 
 ssize_t mb_tcp_con_send(mb_tcp_con_t *con, char *buf, size_t len)
@@ -101,14 +102,14 @@ ssize_t mb_tcp_con_send(mb_tcp_con_t *con, char *buf, size_t len)
     num = send(con->sd, buf, len, 0);
     if (num == 0)
     {
-        mb_tcp_log_info("[%d] connection closed remotely", con->index);
+        mb_log_info("[%d] connection closed remotely", con->index);
         return 0;
     }
     else if (num < 0)
     {
         return -errno;
     }
-    mb_tcp_log_debug("[%d] sent %d bytes", con->index, num);
+    mb_log_debug("[%d] sent %d bytes", con->index, num);
     return num;
 }
 
@@ -120,21 +121,21 @@ ssize_t mb_tcp_con_recv(mb_tcp_con_t *con)
     num = recv(con->sd, con->rx_buf + con->rx_end, sizeof(con->rx_buf) - con->rx_end, 0);
     if (num == 0)
     {
-        mb_tcp_log_info("[%d] connection closed remotely", con->index);
+        mb_log_info("[%d] connection closed remotely", con->index);
         return 0;
     }
     else if (num < 0)
     {
         return -errno;
     }
-    mb_tcp_log_debug("[%d] received %d bytes", con->index, num);
+    mb_log_debug("[%d] received %d bytes", con->index, num);
     con->rx_end += num;
     if (!mb_tcp_con_rx_complete(con))
     {
-        mb_tcp_log_debug("[%d] buffering received message fragment", con->index);
+        mb_log_debug("[%d] buffering received message fragment", con->index);
         return -EAGAIN;  /* need to receive more data before processing a complete message */
     }
-    mb_tcp_log_debug("[%d] received complete message", con->index);
+    mb_log_debug("[%d] received complete message", con->index);
     return num;
 }
 
@@ -145,6 +146,6 @@ void mb_tcp_con_consume(mb_tcp_con_t *con, size_t num)
     con->rx_end -= num;
     if (con->rx_end > 0)
     {
-        mb_tcp_log_debug("[%d] buffering received back-to-back message", con->index);
+        mb_log_debug("[%d] buffering received back-to-back message", con->index);
     }
 }

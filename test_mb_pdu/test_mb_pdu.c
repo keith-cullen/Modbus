@@ -1198,6 +1198,89 @@ mb_test_result_t test_mb_pdu_wr_mult_regs_resp_invalid_end_addr(void)
     return PASS;
 }
 
+mb_test_result_t test_mb_pdu_rep_server_id_req(void)
+{
+    mb_pdu_t pdu = {0};
+    ssize_t num = 0;
+    char buf[1] = {0};
+    char exp[] = {0x11};
+
+    printf("%-*s", print_cols, "test  58: set and format 'Report Server ID' request PDU");
+    mb_pdu_set_rep_server_id_req(&pdu);
+    num = mb_pdu_format_req(&pdu, buf, sizeof(buf));
+    if (num != sizeof(exp))
+    {
+        return FAIL;
+    }
+    if (memcmp(buf, exp, sizeof(buf)) != 0)
+    {
+        return FAIL;
+    }
+    return PASS;
+}
+
+mb_test_result_t test_mb_pdu_rep_server_id_resp(void)
+{
+    mb_pdu_t pdu = {0};
+    const uint8_t byte_count = 5;
+    const uint8_t server_id[4] = {0xa1, 0xb2, 0xc3, 0xd4};
+    const bool run_ind_status = true;
+    char buf[7] = {0};
+    char exp[] = {0x11, 0x05, 0xa1, 0xb2, 0xc3, 0xd4, 0xff};
+    ssize_t num = 0;
+
+    printf("%-*s", print_cols, "test  59: set and format 'Report Server ID' response PDU");
+    num = mb_pdu_set_rep_server_id_resp(&pdu, byte_count, server_id, run_ind_status);
+    if (num < 0)
+    {
+        return FAIL;
+    }
+    num = mb_pdu_format_resp(&pdu, buf, sizeof(buf));
+    if (num != sizeof(exp))
+    {
+        return FAIL;
+    }
+    if (memcmp(buf, exp, sizeof(buf)) != 0)
+    {
+        return FAIL;
+    }
+    return PASS;
+}
+
+mb_test_result_t test_mb_pdu_rep_server_id_resp_invalid_byte_count1(void)
+{
+    mb_pdu_t pdu = {0};
+    const uint8_t byte_count = 0;
+    const uint8_t server_id[4] = {0xa1, 0xb2, 0xc3, 0xd4};
+    const bool run_ind_status = true;
+    int ret = 0;
+
+    printf("%-*s", print_cols, "test  60: set and format 'Report Server ID' response PDU with invalid byte_count");
+    ret = mb_pdu_set_rep_server_id_resp(&pdu, byte_count, server_id, run_ind_status);
+    if (ret != -MB_PDU_EXCEPT_ILLEGAL_VAL)
+    {
+        return FAIL;
+    }
+    return PASS;
+}
+
+mb_test_result_t test_mb_pdu_rep_server_id_resp_invalid_byte_count2(void)
+{
+    mb_pdu_t pdu = {0};
+    const uint8_t byte_count = 252;
+    const uint8_t server_id[253] = {0};
+    const bool run_ind_status = true;
+    int ret = 0;
+
+    printf("%-*s", print_cols, "test  61: set and format 'Report Server ID' response PDU with invalid byte_count");
+    ret = mb_pdu_set_rep_server_id_resp(&pdu, byte_count, server_id, run_ind_status);
+    if (ret != -MB_PDU_EXCEPT_ILLEGAL_VAL)
+    {
+        return FAIL;
+    }
+    return PASS;
+}
+
 mb_test_result_t test_mb_pdu_rd_file_rec_req(void)
 {
     mb_pdu_t pdu = {0};
@@ -1208,7 +1291,7 @@ mb_test_result_t test_mb_pdu_rd_file_rec_req(void)
     char buf[16] = {0};
     char exp[] = {0x14, 0x0e, 0x06, 0x00, 0x04, 0x00, 0x01, 0x00, 0x02, 0x06, 0x00, 0x03, 0x00, 0x09, 0x00, 0x02};
 
-    printf("%-*s", print_cols, "test  58: set and format 'Read File Record' request PDU");
+    printf("%-*s", print_cols, "test  62: set and format 'Read File Record' request PDU");
     num = mb_pdu_set_rd_file_rec_req(&pdu, sub_req, num_sub_req);
     if (num < 0)
     {
@@ -1233,7 +1316,7 @@ mb_test_result_t test_mb_pdu_rd_file_rec_req_invalid_num_sub_req1(void)
     const size_t num_sub_req = 36;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  59: set 'Read File Record' request PDU with invalid num_sub_req");
+    printf("%-*s", print_cols, "test  63: set 'Read File Record' request PDU with invalid num_sub_req");
     ret = mb_pdu_set_rd_file_rec_req(&pdu, sub_req, num_sub_req);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -1249,7 +1332,7 @@ mb_test_result_t test_mb_pdu_rd_file_rec_req_invalid_num_sub_req2(void)
     const size_t num_sub_req = 0;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  60: set 'Read File Record' request PDU with invalid num_sub_req");
+    printf("%-*s", print_cols, "test  64: set 'Read File Record' request PDU with invalid num_sub_req");
     ret = mb_pdu_set_rd_file_rec_req(&pdu, sub_req, num_sub_req);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -1266,7 +1349,7 @@ mb_test_result_t test_mb_pdu_rd_file_rec_req_invalid_ref_type(void)
     const size_t num_sub_req = 2;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  61: set 'Read File Record' request PDU with invalid ref_type");
+    printf("%-*s", print_cols, "test  65: set 'Read File Record' request PDU with invalid ref_type");
     ret = mb_pdu_set_rd_file_rec_req(&pdu, sub_req, num_sub_req);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -1283,7 +1366,7 @@ mb_test_result_t test_mb_pdu_rd_file_rec_req_invalid_file_num(void)
     const size_t num_sub_req = 2;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  62: set 'Read File Record' request PDU with invalid file_num");
+    printf("%-*s", print_cols, "test  66: set 'Read File Record' request PDU with invalid file_num");
     ret = mb_pdu_set_rd_file_rec_req(&pdu, sub_req, num_sub_req);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -1300,7 +1383,7 @@ mb_test_result_t test_mb_pdu_rd_file_rec_req_invalid_rec_num(void)
     const size_t num_sub_req = 2;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  63: set 'Read File Record' request PDU with invalid rec_num");
+    printf("%-*s", print_cols, "test  67: set 'Read File Record' request PDU with invalid rec_num");
     ret = mb_pdu_set_rd_file_rec_req(&pdu, sub_req, num_sub_req);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -1317,7 +1400,7 @@ mb_test_result_t test_mb_pdu_rd_file_rec_req_invalid_end_addr(void)
     const size_t num_sub_req = 2;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  64: set 'Read File Record' request PDU with invalid end_addr");
+    printf("%-*s", print_cols, "test  68: set 'Read File Record' request PDU with invalid end_addr");
     ret = mb_pdu_set_rd_file_rec_req(&pdu, sub_req, num_sub_req);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -1336,7 +1419,7 @@ mb_test_result_t test_mb_pdu_rd_file_rec_resp(void)
     char buf[14] = {0};
     char exp[] = {0x14, 0x0c, 0x05, 0x06, 0x0d, 0xfe, 0x00, 0x20, 0x05, 0x06, 0x33, 0xcd, 0x00, 0x40};
 
-    printf("%-*s", print_cols, "test  65: set and format 'Read File Record' response PDU");
+    printf("%-*s", print_cols, "test  69: set and format 'Read File Record' response PDU");
     num = mb_pdu_set_rd_file_rec_resp(&pdu, sub_req, num_sub_req);
     if (num < 0)
     {
@@ -1361,7 +1444,7 @@ mb_test_result_t test_mb_pdu_rd_file_rec_resp_invalid_num_sub_req(void)
     const size_t num_sub_req = 36;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  66: set 'Read File Record' response PDU with invalid num_sub_req");
+    printf("%-*s", print_cols, "test  70: set 'Read File Record' response PDU with invalid num_sub_req");
     ret = mb_pdu_set_rd_file_rec_resp(&pdu, sub_req, num_sub_req);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -1377,7 +1460,7 @@ mb_test_result_t test_mb_pdu_rd_file_rec_resp_invalid_file_resp_len1(void)
     const size_t num_sub_req = 1;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  67: set 'Read File Record' response PDU with invalid file_resp_len");
+    printf("%-*s", print_cols, "test  71: set 'Read File Record' response PDU with invalid file_resp_len");
     ret = mb_pdu_set_rd_file_rec_resp(&pdu, sub_req, num_sub_req);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -1393,7 +1476,7 @@ mb_test_result_t test_mb_pdu_rd_file_rec_resp_invalid_file_resp_len2(void)
     const size_t num_sub_req = 1;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  68: set 'Read File Record' response PDU with invalid file_resp_len");
+    printf("%-*s", print_cols, "test  72: set 'Read File Record' response PDU with invalid file_resp_len");
     ret = mb_pdu_set_rd_file_rec_resp(&pdu, sub_req, num_sub_req);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -1410,7 +1493,7 @@ mb_test_result_t test_mb_pdu_rd_file_rec_resp_invalid_ref_type(void)
     const size_t num_sub_req = 2;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  69: set 'Read File Record' response PDU with invalid ref_type");
+    printf("%-*s", print_cols, "test  73: set 'Read File Record' response PDU with invalid ref_type");
     ret = mb_pdu_set_rd_file_rec_resp(&pdu, sub_req, num_sub_req);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -1427,7 +1510,7 @@ mb_test_result_t test_mb_pdu_rd_file_rec_resp_invalid_resp_data_len1(void)
     const size_t num_sub_req = 2;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  70: set 'Read File Record' response PDU with invalid resp_data_len");
+    printf("%-*s", print_cols, "test  74: set 'Read File Record' response PDU with invalid resp_data_len");
     ret = mb_pdu_set_rd_file_rec_resp(&pdu, sub_req, num_sub_req);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -1443,7 +1526,7 @@ mb_test_result_t test_mb_pdu_rd_file_rec_resp_invalid_resp_data_len2(void)
     const size_t num_sub_req = 1;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  71: set 'Read File Record' response PDU with invalid resp_data_len");
+    printf("%-*s", print_cols, "test  75: set 'Read File Record' response PDU with invalid resp_data_len");
     ret = mb_pdu_set_rd_file_rec_resp(&pdu, sub_req, num_sub_req);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -1461,7 +1544,7 @@ mb_test_result_t test_mb_pdu_wr_file_rec_req(void)
     char buf[15] = {0};
     char exp[] = {0x15, 0x0d, 0x06, 0x00, 0x04, 0x00, 0x07, 0x00, 0x03, 0x06, 0xaf, 0x04, 0xbe, 0x10, 0x0d};
 
-    printf("%-*s", print_cols, "test  72: set and format 'Write File Record' request PDU");
+    printf("%-*s", print_cols, "test  76: set and format 'Write File Record' request PDU");
     num = mb_pdu_set_wr_file_rec_req(&pdu, sub_req, num_sub_req);
     if (num < 0)
     {
@@ -1486,7 +1569,7 @@ mb_test_result_t test_mb_pdu_wr_file_rec_req_invalid_num_sub_req(void)
     const size_t num_sub_req = 28;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  73: set 'Write File Record' request PDU with invalid num_sub_req");
+    printf("%-*s", print_cols, "test  77: set 'Write File Record' request PDU with invalid num_sub_req");
     ret = mb_pdu_set_wr_file_rec_req(&pdu, sub_req, num_sub_req);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -1502,7 +1585,7 @@ mb_test_result_t test_mb_pdu_wr_file_rec_req_invalid_ref_type(void)
     const size_t num_sub_req = 1;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  74: set 'Write File Record' request PDU with invalid ref_type");
+    printf("%-*s", print_cols, "test  78: set 'Write File Record' request PDU with invalid ref_type");
     ret = mb_pdu_set_wr_file_rec_req(&pdu, sub_req, num_sub_req);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -1518,7 +1601,7 @@ mb_test_result_t test_mb_pdu_wr_file_rec_req_invalid_file_num(void)
     const size_t num_sub_req = 1;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  75: set 'Write File Record' request PDU with invalid file_num");
+    printf("%-*s", print_cols, "test  79: set 'Write File Record' request PDU with invalid file_num");
     ret = mb_pdu_set_wr_file_rec_req(&pdu, sub_req, num_sub_req);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -1534,7 +1617,7 @@ mb_test_result_t test_mb_pdu_wr_file_rec_req_invalid_rec_num(void)
     const size_t num_sub_req = 1;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  76: set 'Write File Record' request PDU with invalid rec_num");
+    printf("%-*s", print_cols, "test  80: set 'Write File Record' request PDU with invalid rec_num");
     ret = mb_pdu_set_wr_file_rec_req(&pdu, sub_req, num_sub_req);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -1550,7 +1633,7 @@ mb_test_result_t test_mb_pdu_wr_file_rec_req_invalid_rec_len(void)
     const size_t num_sub_req = 1;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  77: set 'Write File Record' request PDU with invalid rec_len");
+    printf("%-*s", print_cols, "test  81: set 'Write File Record' request PDU with invalid rec_len");
     ret = mb_pdu_set_wr_file_rec_req(&pdu, sub_req, num_sub_req);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -1566,7 +1649,7 @@ mb_test_result_t test_mb_pdu_wr_file_rec_req_invalid_end_addr(void)
     const size_t num_sub_req = 1;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  78: set 'Write File Record' request PDU with invalid end_addr");
+    printf("%-*s", print_cols, "test  82: set 'Write File Record' request PDU with invalid end_addr");
     ret = mb_pdu_set_wr_file_rec_req(&pdu, sub_req, num_sub_req);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -1582,7 +1665,7 @@ mb_test_result_t test_mb_pdu_wr_file_rec_req_invalid_req_data_len1(void)
     const size_t num_sub_req = 1;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  79: set 'Write File Record' request PDU with invalid req_data_len");
+    printf("%-*s", print_cols, "test  83: set 'Write File Record' request PDU with invalid req_data_len");
     ret = mb_pdu_set_wr_file_rec_req(&pdu, sub_req, num_sub_req);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -1599,7 +1682,7 @@ mb_test_result_t test_mb_pdu_wr_file_rec_req_invalid_req_data_len2(void)
     const size_t num_sub_req = 2;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  80: set 'Write File Record' request PDU with invalid req_data_len");
+    printf("%-*s", print_cols, "test  84: set 'Write File Record' request PDU with invalid req_data_len");
     ret = mb_pdu_set_wr_file_rec_req(&pdu, sub_req, num_sub_req);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -1617,7 +1700,7 @@ mb_test_result_t test_mb_pdu_wr_file_rec_resp(void)
     char buf[15] = {0};
     char exp[] = {0x15, 0x0d, 0x06, 0x00, 0x04, 0x00, 0x07, 0x00, 0x03, 0x06, 0xaf, 0x04, 0xbe, 0x10, 0x00d};
 
-    printf("%-*s", print_cols, "test  81: set and format 'Write File Record' resonse PDU");
+    printf("%-*s", print_cols, "test  85: set and format 'Write File Record' resonse PDU");
     num = mb_pdu_set_wr_file_rec_resp(&pdu, sub_req, num_sub_req);
     if (num < 0)
     {
@@ -1642,7 +1725,7 @@ mb_test_result_t test_mb_pdu_wr_file_rec_resp_invalid_num_sub_req(void)
     const size_t num_sub_req = 28;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  82: set 'Write File Record' response PDU with invalid num_sub_req");
+    printf("%-*s", print_cols, "test  86: set 'Write File Record' response PDU with invalid num_sub_req");
     ret = mb_pdu_set_wr_file_rec_resp(&pdu, sub_req, num_sub_req);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -1658,7 +1741,7 @@ mb_test_result_t test_mb_pdu_wr_file_rec_resp_invalid_ref_type(void)
     const size_t num_sub_req = 1;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  83: set 'Write File Record' response PDU with invalid ref_type");
+    printf("%-*s", print_cols, "test  87: set 'Write File Record' response PDU with invalid ref_type");
     ret = mb_pdu_set_wr_file_rec_resp(&pdu, sub_req, num_sub_req);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -1674,7 +1757,7 @@ mb_test_result_t test_mb_pdu_wr_file_rec_resp_invalid_file_num(void)
     const size_t num_sub_req = 1;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  84: set 'Write File Record' response PDU with invalid file_num");
+    printf("%-*s", print_cols, "test  88: set 'Write File Record' response PDU with invalid file_num");
     ret = mb_pdu_set_wr_file_rec_resp(&pdu, sub_req, num_sub_req);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -1690,7 +1773,7 @@ mb_test_result_t test_mb_pdu_wr_file_rec_resp_invalid_rec_num(void)
     const size_t num_sub_req = 1;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  85: set 'Write File Record' response PDU with invalid rec_num");
+    printf("%-*s", print_cols, "test  89: set 'Write File Record' response PDU with invalid rec_num");
     ret = mb_pdu_set_wr_file_rec_resp(&pdu, sub_req, num_sub_req);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -1706,7 +1789,7 @@ mb_test_result_t test_mb_pdu_wr_file_rec_resp_invalid_rec_len(void)
     const size_t num_sub_req = 1;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  86: set 'Write File Record' response PDU with invalid rec_len");
+    printf("%-*s", print_cols, "test  90: set 'Write File Record' response PDU with invalid rec_len");
     ret = mb_pdu_set_wr_file_rec_resp(&pdu, sub_req, num_sub_req);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -1722,7 +1805,7 @@ mb_test_result_t test_mb_pdu_wr_file_rec_resp_invalid_end_addr(void)
     const size_t num_sub_req = 1;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  87: set 'Write File Record' response PDU with invalid end_addr");
+    printf("%-*s", print_cols, "test  91: set 'Write File Record' response PDU with invalid end_addr");
     ret = mb_pdu_set_wr_file_rec_resp(&pdu, sub_req, num_sub_req);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -1738,7 +1821,7 @@ mb_test_result_t test_mb_pdu_wr_file_rec_resp_invalid_resp_data_len1(void)
     const size_t num_sub_req = 1;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  88: set 'Write File Record' response PDU with invalid resp_data_len");
+    printf("%-*s", print_cols, "test  92: set 'Write File Record' response PDU with invalid resp_data_len");
     ret = mb_pdu_set_wr_file_rec_resp(&pdu, sub_req, num_sub_req);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -1755,7 +1838,7 @@ mb_test_result_t test_mb_pdu_wr_file_rec_resp_invalid_resp_data_len2(void)
     const size_t num_sub_req = 2;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  89: set 'Write File Record' response PDU with invalid resp_data_len");
+    printf("%-*s", print_cols, "test  93: set 'Write File Record' response PDU with invalid resp_data_len");
     ret = mb_pdu_set_wr_file_rec_resp(&pdu, sub_req, num_sub_req);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -1774,7 +1857,7 @@ mb_test_result_t test_mb_pdu_mask_wr_reg_req(void)
     char buf[7] = {0};
     char exp[] = {0x16, 0x00, 0x04, 0x00, 0xf2, 0x00, 0x25};
 
-    printf("%-*s", print_cols, "test  90: set and format 'Mask Write Register' request PDU");
+    printf("%-*s", print_cols, "test  94: set and format 'Mask Write Register' request PDU");
     mb_pdu_set_mask_wr_reg_req(&pdu, ref_addr, and_mask, or_mask);
     num = mb_pdu_format_req(&pdu, buf, sizeof(buf));
     if (num != sizeof(exp))
@@ -1798,7 +1881,7 @@ mb_test_result_t test_mb_pdu_mask_wr_reg_resp(void)
     char buf[7] = {0};
     char exp[] = {0x16, 0x00, 0x04, 0x00, 0xf2, 0x00, 0x25};
 
-    printf("%-*s", print_cols, "test  91: set and format 'Mask Write Register' response PDU");
+    printf("%-*s", print_cols, "test  95: set and format 'Mask Write Register' response PDU");
     mb_pdu_set_mask_wr_reg_resp(&pdu, ref_addr, and_mask, or_mask);
     num = mb_pdu_format_resp(&pdu, buf, sizeof(buf));
     if (num != sizeof(exp))
@@ -1824,7 +1907,7 @@ mb_test_result_t test_mb_pdu_rd_wr_mult_reg_req(void)
     char buf[16] = {0};
     char exp[] = {0x17, 0x00, 0x03, 0x00, 0x06, 0x00, 0xe, 0x00, 0x03, 0x06, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff};
 
-    printf("%-*s", print_cols, "test  92: set and format 'Read/Write Multiple Registers' request PDU");
+    printf("%-*s", print_cols, "test  96: set and format 'Read/Write Multiple Registers' request PDU");
     num = mb_pdu_set_rd_wr_mult_regs_req(&pdu, rd_start_addr, quant_rd, wr_start_addr, quant_wr, wr_reg_val);
     if (num < 0)
     {
@@ -1852,7 +1935,7 @@ mb_test_result_t test_mb_pdu_rd_wr_mult_reg_req_invalid_quant_rd1(void)
     const uint16_t wr_reg_val[] = {0x00ff, 0x00ff, 0x00ff};
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  93: set 'Read/Write Multiple Registers' request PDU with invalid quant_rd");
+    printf("%-*s", print_cols, "test  97: set 'Read/Write Multiple Registers' request PDU with invalid quant_rd");
     ret = mb_pdu_set_rd_wr_mult_regs_req(&pdu, rd_start_addr, quant_rd, wr_start_addr, quant_wr, wr_reg_val);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -1871,7 +1954,7 @@ mb_test_result_t test_mb_pdu_rd_wr_mult_reg_req_invalid_quant_rd2(void)
     const uint16_t wr_reg_val[] = {0x00ff, 0x00ff, 0x00ff};
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  94: set 'Read/Write Multiple Registers' request PDU with invalid quant_rd");
+    printf("%-*s", print_cols, "test  98: set 'Read/Write Multiple Registers' request PDU with invalid quant_rd");
     ret = mb_pdu_set_rd_wr_mult_regs_req(&pdu, rd_start_addr, quant_rd, wr_start_addr, quant_wr, wr_reg_val);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -1890,7 +1973,7 @@ mb_test_result_t test_mb_pdu_rd_wr_mult_reg_req_invalid_rd_end_addr(void)
     const uint16_t wr_reg_val[] = {0x00ff, 0x00ff, 0x00ff};
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  95: set 'Read/Write Multiple Registers' request PDU with invalid rd_end_addr");
+    printf("%-*s", print_cols, "test  99: set 'Read/Write Multiple Registers' request PDU with invalid rd_end_addr");
     ret = mb_pdu_set_rd_wr_mult_regs_req(&pdu, rd_start_addr, quant_rd, wr_start_addr, quant_wr, wr_reg_val);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -1909,7 +1992,7 @@ mb_test_result_t test_mb_pdu_rd_wr_mult_reg_req_invalid_quant_wr1(void)
     const uint16_t wr_reg_val[122] = {0};
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  96: set 'Read/Write Multiple Registers' request PDU with invalid quant_wr");
+    printf("%-*s", print_cols, "test 100: set 'Read/Write Multiple Registers' request PDU with invalid quant_wr");
     ret = mb_pdu_set_rd_wr_mult_regs_req(&pdu, rd_start_addr, quant_rd, wr_start_addr, quant_wr, wr_reg_val);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -1928,7 +2011,7 @@ mb_test_result_t test_mb_pdu_rd_wr_mult_reg_req_invalid_quant_wr2(void)
     const uint16_t wr_reg_val[122] = {0};
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  97: set 'Read/Write Multiple Registers' request PDU with invalid quant_wr");
+    printf("%-*s", print_cols, "test 101: set 'Read/Write Multiple Registers' request PDU with invalid quant_wr");
     ret = mb_pdu_set_rd_wr_mult_regs_req(&pdu, rd_start_addr, quant_rd, wr_start_addr, quant_wr, wr_reg_val);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -1947,7 +2030,7 @@ mb_test_result_t test_mb_pdu_rd_wr_mult_reg_req_invalid_wr_end_addr(void)
     const uint16_t wr_reg_val[] = {0};
     int ret = 0;
 
-    printf("%-*s", print_cols, "test  98: set 'Read/Write Multiple Registers' request PDU with invalid wr_end_addr");
+    printf("%-*s", print_cols, "test 102: set 'Read/Write Multiple Registers' request PDU with invalid wr_end_addr");
     ret = mb_pdu_set_rd_wr_mult_regs_req(&pdu, rd_start_addr, quant_rd, wr_start_addr, quant_wr, wr_reg_val);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -1965,7 +2048,7 @@ mb_test_result_t test_mb_pdu_rd_wr_mult_reg_resp(void)
     char buf[14] = {0};
     char exp[] = {0x17, 0x0c, 0x00, 0xfe, 0x0a, 0xcd, 0x00, 0x01, 0x00, 0x03, 0x00, 0x0d, 0x00, 0xff};
 
-    printf("%-*s", print_cols, "test  99: set and format 'Read/Write Multiple Registers' response PDU");
+    printf("%-*s", print_cols, "test 103: set and format 'Read/Write Multiple Registers' response PDU");
     num = mb_pdu_set_rd_wr_mult_regs_resp(&pdu, byte_count, rd_reg_val);
     if (num < 0)
     {
@@ -1990,7 +2073,7 @@ mb_test_result_t test_mb_pdu_rd_wr_mult_reg_resp_invalid_byte_count1(void)
     const uint16_t rd_reg_val[126] = {0};
     int ret = 0;
 
-    printf("%-*s", print_cols, "test 100: set 'Read/Write Multiple Registers' response PDU with invalid byte_count");
+    printf("%-*s", print_cols, "test 104: set 'Read/Write Multiple Registers' response PDU with invalid byte_count");
     ret = mb_pdu_set_rd_wr_mult_regs_resp(&pdu, byte_count, rd_reg_val);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -2006,7 +2089,7 @@ mb_test_result_t test_mb_pdu_rd_wr_mult_reg_resp_invalid_byte_count2(void)
     const uint16_t rd_reg_val[1] = {0};
     int ret = 0;
 
-    printf("%-*s", print_cols, "test 101: set 'Read/Write Multiple Registers' response PDU with invalid byte_count");
+    printf("%-*s", print_cols, "test 105: set 'Read/Write Multiple Registers' response PDU with invalid byte_count");
     ret = mb_pdu_set_rd_wr_mult_regs_resp(&pdu, byte_count, rd_reg_val);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -2023,7 +2106,7 @@ mb_test_result_t test_mb_pdu_rd_fifo_q_req(void)
     char buf[3] = {0};
     char exp[] = {0x18, 0x04, 0xde};
 
-    printf("%-*s", print_cols, "test 102: set and format 'Read FIFO Queue' request PDU");
+    printf("%-*s", print_cols, "test 106: set and format 'Read FIFO Queue' request PDU");
     mb_pdu_set_rd_fifo_q_req(&pdu, fifo_ptr_addr);
     num = mb_pdu_format_req(&pdu, buf, sizeof(buf));
     if (num != sizeof(exp))
@@ -2046,7 +2129,7 @@ mb_test_result_t test_mb_pdu_rd_fifo_q_resp(void)
     char buf[9] = {0};
     char exp[] = {0x18, 0x00, 0x06, 0x00, 0x02, 0x01, 0xbe, 0x12, 0x84};
 
-    printf("%-*s", print_cols, "test 103: set and format 'Read FIFO Queue' response PDU");
+    printf("%-*s", print_cols, "test 107: set and format 'Read FIFO Queue' response PDU");
     num = mb_pdu_set_rd_fifo_q_resp(&pdu, fifo_count, fifo_val_reg);
     if (num < 0)
     {
@@ -2071,7 +2154,7 @@ mb_test_result_t test_mb_pdu_rd_fifo_q_resp_invalid_fifo_count(void)
     const uint16_t fifo_val_reg[32] = {0};
     int ret = 0;
 
-    printf("%-*s", print_cols, "test 104: set 'Read FIFO Queue' response PDU with invalid fifo_count");
+    printf("%-*s", print_cols, "test 108: set 'Read FIFO Queue' response PDU with invalid fifo_count");
     ret = mb_pdu_set_rd_fifo_q_resp(&pdu, fifo_count, fifo_val_reg);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -2090,7 +2173,7 @@ mb_test_result_t test_mb_pdu_enc_if_trans_req(void)
     char buf[6] = {0};
     char exp[] = {0x2b, 0x0a, 0x01, 0x02, 0x03, 0x04};
 
-    printf("%-*s", print_cols, "test 105: set and format 'Encapsulated Interface Transport' request PDU");
+    printf("%-*s", print_cols, "test 109: set and format 'Encapsulated Interface Transport' request PDU");
     num = mb_pdu_set_enc_if_trans_req(&pdu, mei_type, mei_data, mei_data_len);
     if (num < 0)
     {
@@ -2116,7 +2199,7 @@ mb_test_result_t test_mb_pdu_enc_if_trans_req_invalid_mei_data_len(void)
     const uint8_t mei_data_len = 252;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test 106: set 'Encapsulated Interface Transport' request PDU with invalid mei_data_len");
+    printf("%-*s", print_cols, "test 110: set 'Encapsulated Interface Transport' request PDU with invalid mei_data_len");
     ret = mb_pdu_set_enc_if_trans_req(&pdu, mei_type, mei_data, mei_data_len);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -2135,7 +2218,7 @@ mb_test_result_t test_mb_pdu_enc_if_trans_resp(void)
     char buf[6] = {0};
     char exp[] = {0x2b, 0x0a, 0x01, 0x02, 0x03, 0x04};
 
-    printf("%-*s", print_cols, "test 107: set and format 'Encapsulated Interface Transport' response PDU");
+    printf("%-*s", print_cols, "test 111: set and format 'Encapsulated Interface Transport' response PDU");
     num = mb_pdu_set_enc_if_trans_resp(&pdu, mei_type, mei_data, mei_data_len);
     if (num < 0)
     {
@@ -2161,7 +2244,7 @@ mb_test_result_t test_mb_pdu_enc_if_trans_resp_invalid_mei_data_len(void)
     const uint8_t mei_data_len = 252;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test 108: set 'Encapsulated Interface Transport' response PDU with invalid mei_data_len");
+    printf("%-*s", print_cols, "test 112: set 'Encapsulated Interface Transport' response PDU with invalid mei_data_len");
     ret = mb_pdu_set_enc_if_trans_resp(&pdu, mei_type, mei_data, mei_data_len);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -2179,7 +2262,7 @@ mb_test_result_t test_mb_pdu_err_resp(void)
     char buf[2] = {0};
     char exp[] = {0x81, 0x02};
 
-    printf("%-*s", print_cols, "test 109: set and format 'Error' response PDU");
+    printf("%-*s", print_cols, "test 113: set and format 'Error' response PDU");
     num = mb_pdu_set_err_resp(&pdu, func_code, except_code);
     if (num < 0)
     {
@@ -2204,7 +2287,7 @@ mb_test_result_t test_mb_pdu_err_resp_invalid_func_code(void)
     const uint8_t except_code = 0x02;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test 110: set and format 'Error' response PDU with invalid func_code");
+    printf("%-*s", print_cols, "test 114: set and format 'Error' response PDU with invalid func_code");
     ret = mb_pdu_set_err_resp(&pdu, func_code, except_code);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -2220,7 +2303,7 @@ mb_test_result_t test_mb_pdu_err_resp_invalid_except_code(void)
     const uint8_t except_code = 0x07;
     int ret = 0;
 
-    printf("%-*s", print_cols, "test 111: set and format 'Error' response PDU with invalid except_code");
+    printf("%-*s", print_cols, "test 115: set and format 'Error' response PDU with invalid except_code");
     ret = mb_pdu_set_err_resp(&pdu, func_code, except_code);
     if (ret != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -2238,7 +2321,7 @@ mb_test_result_t test_mb_pdu_parse_rd_coils_req(void)
     ssize_t num = 0;
     char buf[] = {0x01, 0x00, 0x13, 0x00, 0x13};
 
-    printf("%-*s", print_cols, "test 112: parse 'Read Coils' request PDU");
+    printf("%-*s", print_cols, "test 116: parse 'Read Coils' request PDU");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -2265,7 +2348,7 @@ mb_test_result_t test_mb_pdu_parse_rd_coils_req_invalid_quant_coils1(void)
     ssize_t num = 0;
     char buf[] = {0x01, 0x00, 0x13, 0x00, 0x00};
 
-    printf("%-*s", print_cols, "test 113: parse 'Read Coils' request PDU with invalid quant_coils");
+    printf("%-*s", print_cols, "test 117: parse 'Read Coils' request PDU with invalid quant_coils");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -2280,7 +2363,7 @@ mb_test_result_t test_mb_pdu_parse_rd_coils_req_invalid_quant_coils2(void)
     ssize_t num = 0;
     char buf[] = {0x01, 0x00, 0x13, 0x07, 0xd1};
 
-    printf("%-*s", print_cols, "test 114: parse 'Read Coils' request PDU with invalid quant_coils");
+    printf("%-*s", print_cols, "test 118: parse 'Read Coils' request PDU with invalid quant_coils");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -2295,7 +2378,7 @@ mb_test_result_t test_mb_pdu_parse_rd_coils_req_invalid_end_addr(void)
     ssize_t num = 0;
     char buf[] = {0x01, 0xff, 0xff, 0x00, 0x01};  /* 0xffff + 0x0001 > 0xffff */
 
-    printf("%-*s", print_cols, "test 115: parse 'Read Coils' request PDU with invalid end_addr");
+    printf("%-*s", print_cols, "test 119: parse 'Read Coils' request PDU with invalid end_addr");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -2313,7 +2396,7 @@ mb_test_result_t test_mb_pdu_parse_rd_coils_resp(void)
     ssize_t num = 0;
     char buf[] = {0x01, 0x03, 0xcd, 0x6b, 0x05};
 
-    printf("%-*s", print_cols, "test 116: parse 'Read Coils' response PDU");
+    printf("%-*s", print_cols, "test 120: parse 'Read Coils' response PDU");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -2340,7 +2423,7 @@ mb_test_result_t test_mb_pdu_parse_rd_coils_resp_invalid_byte_count(void)
     ssize_t num = 0;
     char buf[] = {0x01, 0xfb};
 
-    printf("%-*s", print_cols, "test 117: parse 'Read Coils' response PDU with invalid byte_count");
+    printf("%-*s", print_cols, "test 121: parse 'Read Coils' response PDU with invalid byte_count");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -2358,7 +2441,7 @@ mb_test_result_t test_mb_pdu_parse_rd_disc_ips_req(void)
     ssize_t num = 0;
     char buf[] = {0x02, 0x00, 0xc4, 0x00, 0x16};
 
-    printf("%-*s", print_cols, "test 118: parse 'Read Discrete Inputs' request PDU");
+    printf("%-*s", print_cols, "test 122: parse 'Read Discrete Inputs' request PDU");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -2385,7 +2468,7 @@ mb_test_result_t test_mb_pdu_parse_rd_disc_ips_req_invalid_quant_ips1(void)
     ssize_t num = 0;
     char buf[] = {0x02, 0x00, 0xc4, 0x00, 0x00};
 
-    printf("%-*s", print_cols, "test 119: parse 'Read Discrete Inputs' request PDU with invalid quant_ips");
+    printf("%-*s", print_cols, "test 123: parse 'Read Discrete Inputs' request PDU with invalid quant_ips");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -2400,7 +2483,7 @@ mb_test_result_t test_mb_pdu_parse_rd_disc_ips_req_invalid_quant_ips2(void)
     ssize_t num = 0;
     char buf[] = {0x02, 0x00, 0xc4, 0x07, 0xd1};
 
-    printf("%-*s", print_cols, "test 120: parse 'Read Discrete Inputs' request PDU with invalid quant_ips");
+    printf("%-*s", print_cols, "test 124: parse 'Read Discrete Inputs' request PDU with invalid quant_ips");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -2415,7 +2498,7 @@ mb_test_result_t test_mb_pdu_parse_rd_disc_ips_req_invalid_end_addr(void)
     ssize_t num = 0;
     char buf[] = {0x02, 0xff, 0xff, 0x00, 0x01};  /* 0xffff + 0x0001 > 0xffff */
 
-    printf("%-*s", print_cols, "test 121: parse 'Read Discrete Inputs' request PDU with invalid end_addr");
+    printf("%-*s", print_cols, "test 125: parse 'Read Discrete Inputs' request PDU with invalid end_addr");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -2433,7 +2516,7 @@ mb_test_result_t test_mb_pdu_parse_rd_disc_ips_resp(void)
     ssize_t num = 0;
     char buf[] = {0x02, 0x03, 0xac, 0xdb, 0x35};
 
-    printf("%-*s", print_cols, "test 122: parse 'Read Discrete Inputs' response PDU");
+    printf("%-*s", print_cols, "test 126: parse 'Read Discrete Inputs' response PDU");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -2460,7 +2543,7 @@ mb_test_result_t test_mb_pdu_parse_rd_disc_ips_resp_invalid_byte_count(void)
     ssize_t num = 0;
     char buf[] = {0x02, 0xfb};
 
-    printf("%-*s", print_cols, "test 123: parse 'Read Discrete Inputs' response PDU with invalid byte_count");
+    printf("%-*s", print_cols, "test 127: parse 'Read Discrete Inputs' response PDU with invalid byte_count");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -2478,7 +2561,7 @@ mb_test_result_t test_mb_pdu_parse_rd_hold_regs_req(void)
     ssize_t num = 0;
     char buf[] = {0x03, 0x00, 0x6b, 0x00, 0x03};
 
-    printf("%-*s", print_cols, "test 124: parse 'Read Holding Registers' request PDU");
+    printf("%-*s", print_cols, "test 128: parse 'Read Holding Registers' request PDU");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -2505,7 +2588,7 @@ mb_test_result_t test_mb_pdu_parse_rd_hold_regs_req_invalid_quant_regs1(void)
     ssize_t num = 0;
     char buf[] = {0x03, 0x00, 0x6b, 0x00, 0x00};
 
-    printf("%-*s", print_cols, "test 125: parse 'Read Holding Registers' request PDU with invalid quant_regs");
+    printf("%-*s", print_cols, "test 129: parse 'Read Holding Registers' request PDU with invalid quant_regs");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -2520,7 +2603,7 @@ mb_test_result_t test_mb_pdu_parse_rd_hold_regs_req_invalid_quant_regs2(void)
     ssize_t num = 0;
     char buf[] = {0x03, 0x00, 0x6b, 0x00, 0x7e};
 
-    printf("%-*s", print_cols, "test 126: parse 'Read Holding Registers' request PDU with invalid quant_regs");
+    printf("%-*s", print_cols, "test 130: parse 'Read Holding Registers' request PDU with invalid quant_regs");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -2535,7 +2618,7 @@ mb_test_result_t test_mb_pdu_parse_rd_hold_regs_req_invalid_end_addr(void)
     ssize_t num = 0;
     char buf[] = {0x03, 0xff, 0xff, 0x00, 0x01};  /* 0xffff + 0x0001 > 0xffff */
 
-    printf("%-*s", print_cols, "test 127: parse 'Read Holding Registers' request PDU with invalid end_addr");
+    printf("%-*s", print_cols, "test 131: parse 'Read Holding Registers' request PDU with invalid end_addr");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -2553,7 +2636,7 @@ mb_test_result_t test_mb_pdu_parse_rd_hold_regs_resp(void)
     ssize_t num = 0;
     char buf[] = {0x03, 0x06, 0x02, 0x2b, 0x00, 0x00, 0x00, 0x64};
 
-    printf("%-*s", print_cols, "test 128: parse 'Read Holding Registers' response PDU");
+    printf("%-*s", print_cols, "test 132: parse 'Read Holding Registers' response PDU");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -2580,7 +2663,7 @@ mb_test_result_t test_mb_pdu_parse_rd_hold_regs_resp_invalid_byte_count1(void)
     ssize_t num = 0;
     char buf[] = {0x03, 0x01};
 
-    printf("%-*s", print_cols, "test 129: parse 'Read Holding Registers' response PDU with invalid byte_count");
+    printf("%-*s", print_cols, "test 133: parse 'Read Holding Registers' response PDU with invalid byte_count");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -2595,7 +2678,7 @@ mb_test_result_t test_mb_pdu_parse_rd_hold_regs_resp_invalid_byte_count2(void)
     ssize_t num = 0;
     char buf[] = {0x03, 0xfc};
 
-    printf("%-*s", print_cols, "test 130: parse 'Read Holding Registers' response PDU with invalid byte_count");
+    printf("%-*s", print_cols, "test 134: parse 'Read Holding Registers' response PDU with invalid byte_count");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -2613,7 +2696,7 @@ mb_test_result_t test_mb_pdu_parse_rd_ip_regs_req(void)
     ssize_t num = 0;
     char buf[] = {0x04, 0x00, 0x08, 0x00, 0x01};
 
-    printf("%-*s", print_cols, "test 131: parse 'Read Input Registers' request PDU");
+    printf("%-*s", print_cols, "test 135: parse 'Read Input Registers' request PDU");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -2640,7 +2723,7 @@ mb_test_result_t test_mb_pdu_parse_rd_ip_regs_req_invalid_quant_ip_regs1(void)
     ssize_t num = 0;
     char buf[] = {0x04, 0x00, 0x08, 0x00, 0x00};
 
-    printf("%-*s", print_cols, "test 132: parse 'Read Input Registers' request PDU with invalid quant_ip_regs");
+    printf("%-*s", print_cols, "test 136: parse 'Read Input Registers' request PDU with invalid quant_ip_regs");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -2655,7 +2738,7 @@ mb_test_result_t test_mb_pdu_parse_rd_ip_regs_req_invalid_quant_ip_regs2(void)
     ssize_t num = 0;
     char buf[] = {0x04, 0x00, 0x08, 0x00, 0x7e};
 
-    printf("%-*s", print_cols, "test 133: parse 'Read Input Registers' request PDU with invalid quant_ip_regs");
+    printf("%-*s", print_cols, "test 137: parse 'Read Input Registers' request PDU with invalid quant_ip_regs");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -2670,7 +2753,7 @@ mb_test_result_t test_mb_pdu_parse_rd_ip_regs_req_invalid_end_addr(void)
     ssize_t num = 0;
     char buf[] = {0x04, 0xff, 0xff, 0x00, 0x01};  /* 0xffff + 0x0001 > 0xffff */
 
-    printf("%-*s", print_cols, "test 134: parse 'Read Input Registers' request PDU with invalid end_addr");
+    printf("%-*s", print_cols, "test 138: parse 'Read Input Registers' request PDU with invalid end_addr");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -2688,7 +2771,7 @@ mb_test_result_t test_mb_pdu_parse_rd_ip_regs_resp(void)
     ssize_t num = 0;
     char buf[] = {0x04, 0x02, 0x00, 0x0a};
 
-    printf("%-*s", print_cols, "test 135: parse 'Read Input Registers' response PDU");
+    printf("%-*s", print_cols, "test 139: parse 'Read Input Registers' response PDU");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -2715,7 +2798,7 @@ mb_test_result_t test_mb_pdu_parse_rd_ip_regs_resp_invalid_byte_count1(void)
     ssize_t num = 0;
     char buf[] = {0x04, 0x01, 0x00};
 
-    printf("%-*s", print_cols, "test 136: parse 'Read Input Registers' response PDU with invalid byte_count");
+    printf("%-*s", print_cols, "test 140: parse 'Read Input Registers' response PDU with invalid byte_count");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -2730,7 +2813,7 @@ mb_test_result_t test_mb_pdu_parse_rd_ip_regs_resp_invalid_byte_count2(void)
     ssize_t num = 0;
     char buf[] = {0x04, 0xfc};
 
-    printf("%-*s", print_cols, "test 137: parse 'Read Input Registers' response PDU with invalid byte_count");
+    printf("%-*s", print_cols, "test 141: parse 'Read Input Registers' response PDU with invalid byte_count");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -2748,7 +2831,7 @@ mb_test_result_t test_mb_pdu_parse_wr_sing_coil_req1(void)
     ssize_t num = 0;
     char buf[] = {0x05, 0x00, 0xac, 0x00, 0x00};
 
-    printf("%-*s", print_cols, "test 138: parse 'Write Single Coil' request PDU");
+    printf("%-*s", print_cols, "test 142: parse 'Write Single Coil' request PDU");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -2778,7 +2861,7 @@ mb_test_result_t test_mb_pdu_parse_wr_sing_coil_req2(void)
     ssize_t num = 0;
     char buf[] = {0x05, 0x00, 0xac, 0xff, 0x00};
 
-    printf("%-*s", print_cols, "test 139: parse 'Write Single Coil' request PDU");
+    printf("%-*s", print_cols, "test 143: parse 'Write Single Coil' request PDU");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -2805,7 +2888,7 @@ mb_test_result_t test_mb_pdu_parse_wr_sing_coil_req_invalid_op_val(void)
     ssize_t num = 0;
     char buf[] = {0x05, 0x00, 0xac, 0x00, 0x01};
 
-    printf("%-*s", print_cols, "test 140: parse 'Write Single Coil' request PDU with invalid op_val");
+    printf("%-*s", print_cols, "test 144: parse 'Write Single Coil' request PDU with invalid op_val");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -2823,7 +2906,7 @@ mb_test_result_t test_mb_pdu_parse_wr_sing_coil_resp1(void)
     ssize_t num = 0;
     char buf[] = {0x05, 0x00, 0xac, 0x00, 0x00};
 
-    printf("%-*s", print_cols, "test 141: parse 'Write Single Coil' response PDU");
+    printf("%-*s", print_cols, "test 145: parse 'Write Single Coil' response PDU");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -2853,7 +2936,7 @@ mb_test_result_t test_mb_pdu_parse_wr_sing_coil_resp2(void)
     ssize_t num = 0;
     char buf[] = {0x05, 0x00, 0xac, 0xff, 0x00};
 
-    printf("%-*s", print_cols, "test 142: parse 'Write Single Coil' response PDU");
+    printf("%-*s", print_cols, "test 146: parse 'Write Single Coil' response PDU");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -2880,7 +2963,7 @@ mb_test_result_t test_mb_pdu_parse_wr_sing_coil_resp_invalid_op_val(void)
     ssize_t num = 0;
     char buf[] = {0x05, 0x00, 0xac, 0x00, 0x01};
 
-    printf("%-*s", print_cols, "test 143: parse 'Write Single Coil' response PDU with invalid op_val");
+    printf("%-*s", print_cols, "test 147: parse 'Write Single Coil' response PDU with invalid op_val");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -2898,7 +2981,7 @@ mb_test_result_t test_mb_pdu_parse_wr_sing_reg_req(void)
     ssize_t num = 0;
     char buf[] = {0x06, 0x00, 0x01, 0x00, 0x03};
 
-    printf("%-*s", print_cols, "test 144: parse 'Write Single Register' request PDU");
+    printf("%-*s", print_cols, "test 148: parse 'Write Single Register' request PDU");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -2928,7 +3011,7 @@ mb_test_result_t test_mb_pdu_parse_wr_sing_reg_resp(void)
     ssize_t num = 0;
     char buf[] = {0x06, 0x00, 0x01, 0x00, 0x03};
 
-    printf("%-*s", print_cols, "test 145: parse 'Write Single Register' response PDU");
+    printf("%-*s", print_cols, "test 149: parse 'Write Single Register' response PDU");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -2956,7 +3039,7 @@ mb_test_result_t test_mb_pdu_parse_rd_except_stat_req(void)
     ssize_t num = 0;
     char buf[] = {0x07};
 
-    printf("%-*s", print_cols, "test 146: parse 'Read Exception Status' request PDU");
+    printf("%-*s", print_cols, "test 150: parse 'Read Exception Status' request PDU");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -2977,7 +3060,7 @@ mb_test_result_t test_mb_pdu_parse_rd_except_stat_resp(void)
     ssize_t num = 0;
     char buf[] = {0x07, 0x6d};
 
-    printf("%-*s", print_cols, "test 147: parse 'Read Exception Status' response PDU");
+    printf("%-*s", print_cols, "test 151: parse 'Read Exception Status' response PDU");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -3000,10 +3083,11 @@ mb_test_result_t test_mb_pdu_parse_diag_req(void)
     const uint8_t func_code = 0x08;
     const uint16_t sub_func = 0x0000;
     const uint16_t data[1] = {0xa537};
+    const uint16_t num_data = 1;
     ssize_t num = 0;
     char buf[] = {0x08, 0x00, 0x00, 0xa5, 0x37};
 
-    printf("%-*s", print_cols, "test 148: parse 'Diagnostics' request PDU");
+    printf("%-*s", print_cols, "test 152: parse 'Diagnostics' request PDU");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -3021,6 +3105,10 @@ mb_test_result_t test_mb_pdu_parse_diag_req(void)
     {
         return FAIL;
     }
+    if (pdu.diag_req.num_data != num_data)
+    {
+        return FAIL;
+    }
     return PASS;
 }
 
@@ -3030,10 +3118,11 @@ mb_test_result_t test_mb_pdu_parse_diag_resp(void)
     const uint8_t func_code = 0x08;
     const uint16_t sub_func = 0x0000;
     const uint16_t data[1] = {0xa537};
+    const uint16_t num_data = 1;
     ssize_t num = 0;
     char buf[] = {0x08, 0x00, 0x00, 0xa5, 0x37};
 
-    printf("%-*s", print_cols, "test 149: parse 'Diagnostics' response PDU");
+    printf("%-*s", print_cols, "test 153: parse 'Diagnostics' response PDU");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -3051,6 +3140,10 @@ mb_test_result_t test_mb_pdu_parse_diag_resp(void)
     {
         return FAIL;
     }
+    if (pdu.diag_resp.num_data != num_data)
+    {
+        return FAIL;
+    }
     return PASS;
 }
 
@@ -3060,7 +3153,7 @@ mb_test_result_t test_mb_pdu_parse_diag_resp_invalid_len1(void)
     ssize_t num = 0;
     char buf[] = {0x08, 0x00, 0x00, 0xa5, 0x37, 0x00};  /* len not even */
 
-    printf("%-*s", print_cols, "test 150: parse 'Diagnostics' response PDU with invalid len");
+    printf("%-*s", print_cols, "test 154: parse 'Diagnostics' response PDU with invalid len");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -3075,7 +3168,7 @@ mb_test_result_t test_mb_pdu_parse_diag_resp_invalid_len2(void)
     ssize_t num = 0;
     char buf[] = {0x08, 0x00, 0x00};  /* len too short */
 
-    printf("%-*s", print_cols, "test 151: parse 'Diagnostics' response PDU with invalid len");
+    printf("%-*s", print_cols, "test 155: parse 'Diagnostics' response PDU with invalid len");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -3090,7 +3183,7 @@ mb_test_result_t test_mb_pdu_parse_diag_resp_invalid_len3(void)
     ssize_t num = 0;
     char buf[255] = {0x08, 0x00, 0x00};  /* len too large */
 
-    printf("%-*s", print_cols, "test 152: parse 'Diagnostics' response PDU with invalid len");
+    printf("%-*s", print_cols, "test 156: parse 'Diagnostics' response PDU with invalid len");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -3106,7 +3199,7 @@ mb_test_result_t test_mb_pdu_parse_get_com_ev_cntr_req(void)
     ssize_t num = 0;
     char buf[] = {0x0b};
 
-    printf("%-*s", print_cols, "test 153: parse 'Get Comm Event Counter' request PDU");
+    printf("%-*s", print_cols, "test 157: parse 'Get Comm Event Counter' request PDU");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -3128,7 +3221,7 @@ mb_test_result_t test_mb_pdu_parse_get_com_ev_cntr_resp(void)
     ssize_t num = 0;
     char buf[] = {0x0b, 0xff, 0xff, 0x01, 0x08};
 
-    printf("%-*s", print_cols, "test 154: parse 'Get Comm Event Counter' response PDU");
+    printf("%-*s", print_cols, "test 158: parse 'Get Comm Event Counter' response PDU");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -3156,7 +3249,7 @@ mb_test_result_t test_mb_pdu_parse_get_com_ev_log_req(void)
     ssize_t num = 0;
     char buf[] = {0x0c};
 
-    printf("%-*s", print_cols, "test 155: parse 'Get Comm Event Log' request PDU");
+    printf("%-*s", print_cols, "test 159: parse 'Get Comm Event Log' request PDU");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -3181,7 +3274,7 @@ mb_test_result_t test_mb_pdu_parse_get_com_ev_log_resp(void)
     ssize_t num = 0;
     char buf[] = {0x0c, 0x08, 0x00, 0x00, 0x01, 0x08, 0x01, 0x21, 0x20, 0x00};
 
-    printf("%-*s", print_cols, "test 156: parse 'Get Comm Event Log' response PDU");
+    printf("%-*s", print_cols, "test 160: parse 'Get Comm Event Log' response PDU");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -3220,7 +3313,7 @@ mb_test_result_t test_mb_pdu_parse_get_com_ev_log_resp_invalid_byte_count1(void)
     ssize_t num = 0;
     char buf[] = {0x0c, 0x02};  /* byte_count too short */
 
-    printf("%-*s", print_cols, "test 157: parse 'Get Comm Event Log' response PDU with invalid byte_count");
+    printf("%-*s", print_cols, "test 161: parse 'Get Comm Event Log' response PDU with invalid byte_count");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -3235,7 +3328,7 @@ mb_test_result_t test_mb_pdu_parse_get_com_ev_log_resp_invalid_byte_count2(void)
     ssize_t num = 0;
     char buf[254] = {0x0c, 0xfc};  /* byte_count too long */
 
-    printf("%-*s", print_cols, "test 158: parse 'Get Comm Event Log' response PDU with invalid byte_count");
+    printf("%-*s", print_cols, "test 162: parse 'Get Comm Event Log' response PDU with invalid byte_count");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -3255,7 +3348,7 @@ mb_test_result_t test_mb_pdu_parse_wr_mult_coils_req(void)
     ssize_t num = 0;
     char buf[] = {0x0f, 0x00, 0x13, 0x00, 0x0a, 0x02, 0xcd, 0x01};
 
-    printf("%-*s", print_cols, "test 159: parse 'Write Multiple Coils' request PDU");
+    printf("%-*s", print_cols, "test 163: parse 'Write Multiple Coils' request PDU");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -3290,7 +3383,7 @@ mb_test_result_t test_mb_pdu_parse_wr_mult_coils_req_invalid_quant_ops1(void)
     ssize_t num = 0;
     char buf[] = {0x0f, 0x00, 0x13, 0x00, 0x00, 0x00};  /* quant_ops too small (and byte_count too small) */
 
-    printf("%-*s", print_cols, "test 160: parse 'Write Multiple Coils' request PDU with invalid quant_ops");
+    printf("%-*s", print_cols, "test 164: parse 'Write Multiple Coils' request PDU with invalid quant_ops");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -3305,7 +3398,7 @@ mb_test_result_t test_mb_pdu_parse_wr_mult_coils_req_invalid_quant_ops2(void)
     ssize_t num = 0;
     char buf[] = {0x0f, 0x00, 0x13, 0x07, 0xb1, 0xf7};  /* quant_ops too large (and byte_count too large) */
 
-    printf("%-*s", print_cols, "test 161: parse 'Write Multiple Coils' request PDU with invalid quant_ops");
+    printf("%-*s", print_cols, "test 165: parse 'Write Multiple Coils' request PDU with invalid quant_ops");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -3320,7 +3413,7 @@ mb_test_result_t test_mb_pdu_parse_wr_mult_coils_req_invalid_byte_count(void)
     ssize_t num = 0;
     char buf[] = {0x0f, 0x00, 0x13, 0x00, 0x01, 0x00};  /* quant_ops != byte_count */
 
-    printf("%-*s", print_cols, "test 162: parse 'Write Multiple Coils' request PDU with invalid byte_count");
+    printf("%-*s", print_cols, "test 166: parse 'Write Multiple Coils' request PDU with invalid byte_count");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -3335,7 +3428,7 @@ mb_test_result_t test_mb_pdu_parse_wr_mult_coils_req_invalid_end_addr(void)
     ssize_t num = 0;
     char buf[] = {0x0f, 0xff, 0xff, 0x00, 0x01, 0x01, 0x00};  /* 0xffff + 0x0001 > 0xffff */
 
-    printf("%-*s", print_cols, "test 163: parse 'Write Multiple Coils' request PDU with invalid end_addr");
+    printf("%-*s", print_cols, "test 167: parse 'Write Multiple Coils' request PDU with invalid end_addr");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -3353,7 +3446,7 @@ mb_test_result_t test_mb_pdu_parse_wr_mult_coils_resp(void)
     ssize_t num = 0;
     char buf[] = {0x0f, 0x00, 0x13, 0x00, 0x0a};
 
-    printf("%-*s", print_cols, "test 164: parse 'Write Multiple Coils' response PDU");
+    printf("%-*s", print_cols, "test 168: parse 'Write Multiple Coils' response PDU");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -3380,7 +3473,7 @@ mb_test_result_t test_mb_pdu_parse_wr_mult_coils_resp_invalid_quant_ops1(void)
     ssize_t num = 0;
     char buf[] = {0x0f, 0x00, 0x13, 0x00, 0x00};  /* quant_ops too small */
 
-    printf("%-*s", print_cols, "test 165: parse 'Write Multiple Coils' response PDU with invalid quant_ops");
+    printf("%-*s", print_cols, "test 169: parse 'Write Multiple Coils' response PDU with invalid quant_ops");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -3395,7 +3488,7 @@ mb_test_result_t test_mb_pdu_parse_wr_mult_coils_resp_invalid_quant_ops2(void)
     ssize_t num = 0;
     char buf[] = {0x0f, 0x00, 0x13, 0x07, 0xb1};  /* quant_ops too large */
 
-    printf("%-*s", print_cols, "test 166: parse 'Write Multiple Coils' response PDU with invalid quant_ops");
+    printf("%-*s", print_cols, "test 170: parse 'Write Multiple Coils' response PDU with invalid quant_ops");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -3410,7 +3503,7 @@ mb_test_result_t test_mb_pdu_parse_wr_mult_coils_resp_invalid_end_addr(void)
     ssize_t num = 0;
     char buf[] = {0x0f, 0xff, 0xff, 0x00, 0x01, 0x01};  /* 0xffff + 0x0001 > 0xffff */
 
-    printf("%-*s", print_cols, "test 167: parse 'Write Multiple Coils' response PDU with invalid end_addr");
+    printf("%-*s", print_cols, "test 171: parse 'Write Multiple Coils' response PDU with invalid end_addr");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -3430,7 +3523,7 @@ mb_test_result_t test_mb_pdu_parse_wr_mult_regs_req(void)
     ssize_t num = 0;
     char buf[] = {0x10, 0x00, 0x01, 0x00, 0x02, 0x04, 0x00, 0x0a, 0x01, 0x02};
 
-    printf("%-*s", print_cols, "test 168: parse 'Write Multiple Registers' request PDU");
+    printf("%-*s", print_cols, "test 172: parse 'Write Multiple Registers' request PDU");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -3465,7 +3558,7 @@ mb_test_result_t test_mb_pdu_parse_wr_mult_regs_req_invalid_quant_regs1(void)
     ssize_t num = 0;
     char buf[] = {0x10, 0x00, 0x01, 0x00, 0x00, 0x00};  /* quant_regs too small (and byte_count too small) */
 
-    printf("%-*s", print_cols, "test 169: parse 'Write Multiple Registers' request PDU with invalid quant_regs");
+    printf("%-*s", print_cols, "test 173: parse 'Write Multiple Registers' request PDU with invalid quant_regs");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -3480,7 +3573,7 @@ mb_test_result_t test_mb_pdu_parse_wr_mult_regs_req_invalid_quant_regs2(void)
     ssize_t num = 0;
     char buf[] = {0x10, 0x00, 0x01, 0x00, 0x7c, 0xf8};  /* quant_regs too large (and byte_count too large) */
 
-    printf("%-*s", print_cols, "test 170: parse 'Write Multiple Registers' request PDU with invalid quant_regs");
+    printf("%-*s", print_cols, "test 174: parse 'Write Multiple Registers' request PDU with invalid quant_regs");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -3495,7 +3588,7 @@ mb_test_result_t test_mb_pdu_parse_wr_mult_regs_req_invalid_byte_count(void)
     ssize_t num = 0;
     char buf[] = {0x10, 0x00, 0x01, 0x00, 0x02, 0x01};  /* byte_count != quant_regs */
 
-    printf("%-*s", print_cols, "test 171: parse 'Write Multiple Registers' request PDU with invalid byte_count");
+    printf("%-*s", print_cols, "test 175: parse 'Write Multiple Registers' request PDU with invalid byte_count");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -3510,7 +3603,7 @@ mb_test_result_t test_mb_pdu_parse_wr_mult_regs_req_invalid_end_addr(void)
     ssize_t num = 0;
     char buf[] = {0x10, 0xff, 0xff, 0x00, 0x01, 0x02, 0x00, 0x00};  /* 0xffff + 0x0001 > 0xffff */
 
-    printf("%-*s", print_cols, "test 172: parse 'Write Multiple Registers' request PDU with invalid end_addr");
+    printf("%-*s", print_cols, "test 176: parse 'Write Multiple Registers' request PDU with invalid end_addr");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -3528,7 +3621,7 @@ mb_test_result_t test_mb_pdu_parse_wr_mult_regs_resp(void)
     ssize_t num = 0;
     char buf[] = {0x10, 0x00, 0x01, 0x00, 0x02};
 
-    printf("%-*s", print_cols, "test 173: parse 'Write Multiple Registers' response PDU");
+    printf("%-*s", print_cols, "test 177: parse 'Write Multiple Registers' response PDU");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -3555,7 +3648,7 @@ mb_test_result_t test_mb_pdu_parse_wr_mult_regs_resp_invalid_quant_regs1(void)
     ssize_t num = 0;
     char buf[] = {0x10, 0x00, 0x01, 0x00, 0x00};  /* quant_regs too small */
 
-    printf("%-*s", print_cols, "test 174: parse 'Write Multiple Registers' response PDU with invalid quant_regs");
+    printf("%-*s", print_cols, "test 178: parse 'Write Multiple Registers' response PDU with invalid quant_regs");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -3570,7 +3663,7 @@ mb_test_result_t test_mb_pdu_parse_wr_mult_regs_resp_invalid_quant_regs2(void)
     ssize_t num = 0;
     char buf[] = {0x10, 0x00, 0x01, 0x00, 0x7c};  /* quant_regs too large */
 
-    printf("%-*s", print_cols, "test 175: parse 'Write Multiple Registers' response PDU with invalid quant_regs");
+    printf("%-*s", print_cols, "test 179: parse 'Write Multiple Registers' response PDU with invalid quant_regs");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -3585,9 +3678,144 @@ mb_test_result_t test_mb_pdu_parse_wr_mult_regs_resp_invalid_end_addr(void)
     ssize_t num = 0;
     char buf[] = {0x10, 0xff, 0xff, 0x00, 0x01, 0x02, 0x00, 0x00};  /* 0xffff + 0x0001 > 0xffff */
 
-    printf("%-*s", print_cols, "test 176: parse 'Write Multiple Registers' response PDU with invalid end_addr");
+    printf("%-*s", print_cols, "test 180: parse 'Write Multiple Registers' response PDU with invalid end_addr");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
+    {
+        return FAIL;
+    }
+    return PASS;
+}
+
+mb_test_result_t test_mb_pdu_parse_rep_server_id_req(void)
+{
+    mb_pdu_t pdu = {0};
+    const uint8_t func_code = 0x11;
+    ssize_t num = 0;
+    char buf[] = {0x11};
+
+    printf("%-*s", print_cols, "test 181: parse 'Report server ID' request PDU");
+    num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
+    if (num != sizeof(buf))
+    {
+        return FAIL;
+    }
+    if (pdu.func_code != func_code)
+    {
+        return FAIL;
+    }
+    return PASS;
+}
+
+mb_test_result_t test_mb_pdu_parse_rep_server_id_resp1(void)
+{
+    mb_pdu_t pdu = {0};
+    const uint8_t func_code = 0x11;
+    const uint8_t byte_count = 0x05;
+    const uint8_t server_id[4] = {0xa1, 0xb2, 0xc3, 0xd4};
+    const bool run_ind_status = false;
+    ssize_t num = 0;
+    char buf[] = {0x11, 0x05, 0xa1, 0xb2, 0xc3, 0xd4, 0x00};
+
+    printf("%-*s", print_cols, "test 182: parse 'Report server ID' response PDU");
+    num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
+    if (num != sizeof(buf))
+    {
+        return FAIL;
+    }
+    if (pdu.func_code != func_code)
+    {
+        return FAIL;
+    }
+    if (pdu.rep_server_id_resp.byte_count != byte_count)
+    {
+        return FAIL;
+    }
+    if (memcmp(pdu.rep_server_id_resp.server_id, server_id, sizeof(server_id)) != 0)
+    {
+        return FAIL;
+    }
+    if (pdu.rep_server_id_resp.run_ind_status != run_ind_status)
+    {
+        return FAIL;
+    }
+    return PASS;
+}
+
+mb_test_result_t test_mb_pdu_parse_rep_server_id_resp2(void)
+{
+    mb_pdu_t pdu = {0};
+    const uint8_t func_code = 0x11;
+    const uint8_t byte_count = 0x05;
+    const uint8_t server_id[4] = {0xa1, 0xb2, 0xc3, 0xd4};
+    const bool run_ind_status = true;
+    ssize_t num = 0;
+    char buf[] = {0x11, 0x05, 0xa1, 0xb2, 0xc3, 0xd4, 0xff};
+
+    printf("%-*s", print_cols, "test 183: parse 'Report server ID' response PDU");
+    num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
+    if (num != sizeof(buf))
+    {
+        return FAIL;
+    }
+    if (pdu.func_code != func_code)
+    {
+        return FAIL;
+    }
+    if (pdu.rep_server_id_resp.byte_count != byte_count)
+    {
+        return FAIL;
+    }
+    if (memcmp(pdu.rep_server_id_resp.server_id, server_id, sizeof(server_id)) != 0)
+    {
+        return FAIL;
+    }
+    if (pdu.rep_server_id_resp.run_ind_status != run_ind_status)
+    {
+        return FAIL;
+    }
+    return PASS;
+}
+
+mb_test_result_t test_mb_pdu_parse_rep_server_id_resp_invalid_byte_count1(void)
+{
+    mb_pdu_t pdu = {0};
+    char buf[] = {0x11, 0x00};
+    int ret = 0;
+
+    printf("%-*s", print_cols, "test 184: parse 'Report server ID' response PDU with invalid byte_count");
+    ret = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
+    if (ret != -MB_PDU_EXCEPT_ILLEGAL_VAL)
+    {
+        return FAIL;
+    }
+    return PASS;
+}
+
+mb_test_result_t test_mb_pdu_parse_rep_server_id_resp_invalid_byte_count2(void)
+{
+    mb_pdu_t pdu = {0};
+    char buf[254] = {0x11, 0xfc, 0x00};
+    int ret = 0;
+
+    printf("%-*s", print_cols, "test 185: parse 'Report server ID' response PDU with invalid byte_count");
+    ret = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
+    if (ret != -MB_PDU_EXCEPT_ILLEGAL_VAL)
+    {
+        return FAIL;
+    }
+    return PASS;
+}
+
+mb_test_result_t test_mb_pdu_parse_rep_server_id_resp_invalid_run_ind_status(void)
+{
+    mb_pdu_t pdu = {0};
+    char buf[] = {0x11, 0x05, 0xa1, 0xb2, 0xc3, 0xd4, 0x01};
+    int ret = 0;
+
+    printf("%-*s", print_cols, "test 186: parse 'Report server ID' response PDU with invalid run_ind_status");
+    ret = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
+    if (ret != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
         return FAIL;
     }
@@ -3606,7 +3834,7 @@ mb_test_result_t test_mb_pdu_parse_rd_file_rec_req(void)
     ssize_t num = 0;
     char buf[] = {0x14, 0x0e, 0x06, 0x00, 0x04, 0x00, 0x01, 0x00, 0x02, 0x06, 0x00, 0x03, 0x00, 0x09, 0x00, 0x02};
 
-    printf("%-*s", print_cols, "test 177: parse 'Read File Record' request PDU");
+    printf("%-*s", print_cols, "test 187: parse 'Read File Record' request PDU");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -3648,7 +3876,7 @@ mb_test_result_t test_mb_pdu_parse_rd_file_rec_req_invalid_byte_count1(void)
     ssize_t num = 0;
     char buf[] = {0x14, 0x06};  /* byte_count too small */
 
-    printf("%-*s", print_cols, "test 178: parse 'Read File Record' request PDU with invalid byte_count");
+    printf("%-*s", print_cols, "test 188: parse 'Read File Record' request PDU with invalid byte_count");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -3663,7 +3891,7 @@ mb_test_result_t test_mb_pdu_parse_rd_file_rec_req_invalid_byte_count2(void)
     ssize_t num = 0;
     char buf[] = {0x14, 0xf6};  /* byte_count too large */
 
-    printf("%-*s", print_cols, "test 179: parse 'Read File Record' request PDU with invalid byte_count");
+    printf("%-*s", print_cols, "test 189: parse 'Read File Record' request PDU with invalid byte_count");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -3678,7 +3906,7 @@ mb_test_result_t test_mb_pdu_parse_rd_file_rec_req_invalid_ref_type(void)
     ssize_t num = 0;
     char buf[] = {0x14, 0x0e, 0x05, 0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x06, 0x00, 0x03, 0x00, 0x09, 0x00, 0x02};  /* ref_type != 6 */
 
-    printf("%-*s", print_cols, "test 180: parse 'Read File Record' request PDU with invalid ref_type");
+    printf("%-*s", print_cols, "test 190: parse 'Read File Record' request PDU with invalid ref_type");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -3693,7 +3921,7 @@ mb_test_result_t test_mb_pdu_parse_rd_file_rec_req_invalid_file_num(void)
     ssize_t num = 0;
     char buf[] = {0x14, 0x0e, 0x06, 0x00, 0x00, 0x00, 0x01, 0x00, 0x02, 0x06, 0x00, 0x03, 0x00, 0x09, 0x00, 0x02};  /* file_num too small */
 
-    printf("%-*s", print_cols, "test 181: parse 'Read File Record' request PDU with invalid file_num");
+    printf("%-*s", print_cols, "test 191: parse 'Read File Record' request PDU with invalid file_num");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -3708,7 +3936,7 @@ mb_test_result_t test_mb_pdu_parse_rd_file_rec_req_invalid_rec_num(void)
     ssize_t num = 0;
     char buf[] = {0x14, 0x0e, 0x06, 0x00, 0x04, 0x27, 0x10, 0x00, 0x02, 0x06, 0x00, 0x03, 0x00, 0x09, 0x00, 0x02};  /* rec_num too large */
 
-    printf("%-*s", print_cols, "test 182: parse 'Read File Record' request PDU with invalid rec_num");
+    printf("%-*s", print_cols, "test 192: parse 'Read File Record' request PDU with invalid rec_num");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -3723,7 +3951,7 @@ mb_test_result_t test_mb_pdu_parse_rd_file_rec_req_invalid_end_addr(void)
     ssize_t num = 0;
     char buf[] = {0x14, 0x0e, 0x06, 0x00, 0x04, 0x27, 0x0f, 0x00, 0x01, 0x06, 0x00, 0x03, 0x00, 0x09, 0x00, 0x02};  /* 0x270f + 0x0001 > 0x270f */
 
-    printf("%-*s", print_cols, "test 183: parse 'Read File Record' request PDU with invalid end_addr");
+    printf("%-*s", print_cols, "test 193: parse 'Read File Record' request PDU with invalid end_addr");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -3744,7 +3972,7 @@ mb_test_result_t test_mb_pdu_parse_rd_file_rec_resp(void)
     ssize_t num = 0;
     char buf[] = {0x14, 0x0c, 0x05, 0x06, 0x0d, 0xfe, 0x00, 0x20, 0x05, 0x06, 0x33, 0xcd, 0x00, 0x40};
 
-    printf("%-*s", print_cols, "test 184: parse 'Read File Record' response PDU");
+    printf("%-*s", print_cols, "test 194: parse 'Read File Record' response PDU");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -3782,7 +4010,7 @@ mb_test_result_t test_mb_pdu_parse_rd_file_rec_resp_invalid_resp_data_len1(void)
     ssize_t num = 0;
     char buf[] = {0x14, 0x06};  /* resp_data_len too small */
 
-    printf("%-*s", print_cols, "test 185: parse 'Read File Record' response PDU with invalid resp_data_len");
+    printf("%-*s", print_cols, "test 195: parse 'Read File Record' response PDU with invalid resp_data_len");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -3797,7 +4025,7 @@ mb_test_result_t test_mb_pdu_parse_rd_file_rec_resp_invalid_resp_data_len2(void)
     ssize_t num = 0;
     char buf[] = {0x14, 0xf6};  /* resp_data_len too large */
 
-    printf("%-*s", print_cols, "test 186: parse 'Read File Record' response PDU with invalid resp_data_len");
+    printf("%-*s", print_cols, "test 196: parse 'Read File Record' response PDU with invalid resp_data_len");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -3812,7 +4040,7 @@ mb_test_result_t test_mb_pdu_parse_rd_file_rec_resp_invalid_ref_type(void)
     ssize_t num = 0;
     char buf[] = {0x14, 0x0c, 0x05, 0x07, 0x0d, 0xfe, 0x00, 0x20, 0x05, 0x06, 0x33, 0xcd, 0x00, 0x40};  /* ref_type != 6 */
 
-    printf("%-*s", print_cols, "test 187: parse 'Read File Record' response PDU with invalid ref_type");
+    printf("%-*s", print_cols, "test 197: parse 'Read File Record' response PDU with invalid ref_type");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -3827,7 +4055,7 @@ mb_test_result_t test_mb_pdu_parse_rd_file_rec_resp_invalid_file_resp_len1(void)
     ssize_t num = 0;
     char buf[] = {0x14, 0x07, 0x05, 0x06, 0x0d, 0xfe, 0x00, 0x20, 0x00};  /* file_resp_len too small */
 
-    printf("%-*s", print_cols, "test 188: parse 'Read File Record' response PDU with invalid file_resp_len");
+    printf("%-*s", print_cols, "test 198: parse 'Read File Record' response PDU with invalid file_resp_len");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -3842,7 +4070,7 @@ mb_test_result_t test_mb_pdu_parse_rd_file_rec_resp_invalid_file_resp_len2(void)
     ssize_t num = 0;
     char buf[] = {0x14, 0x07, 0x05, 0x06, 0x0d, 0xfe, 0x00, 0x20, 0xf7};  /* file_resp_len too large */
 
-    printf("%-*s", print_cols, "test 189: parse 'Read File Record' response PDU with invalid file_resp_len");
+    printf("%-*s", print_cols, "test 199: parse 'Read File Record' response PDU with invalid file_resp_len");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -3857,7 +4085,7 @@ mb_test_result_t test_mb_pdu_parse_rd_file_rec_resp_invalid_file_resp_len3(void)
     ssize_t num = 0;
     char buf[] = {0x14, 0x07, 0x05, 0x06, 0x0d, 0xfe, 0x00, 0x20, 0x08};  /* file_resp_len even */
 
-    printf("%-*s", print_cols, "test 190: parse 'Read File Record' response PDU with invalid file_resp_len");
+    printf("%-*s", print_cols, "test 200: parse 'Read File Record' response PDU with invalid file_resp_len");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -3877,7 +4105,7 @@ mb_test_result_t test_mb_pdu_parse_wr_file_rec_req(void)
     unsigned i = 0;
     char buf[] = {0x15, 0x0d, 0x06, 0x00, 0x04, 0x00, 0x07, 0x00, 0x03, 0x06, 0xaf, 0x04, 0xbe, 0x10, 0x0d};
 
-    printf("%-*s", print_cols, "test 191: parse 'Write File Record' request PDU");
+    printf("%-*s", print_cols, "test 201: parse 'Write File Record' request PDU");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -3923,7 +4151,7 @@ mb_test_result_t test_mb_pdu_parse_wr_file_rec_req_invalid_req_data_len1(void)
     ssize_t num = 0;
     char buf[] = {0x15, 0x07, 0x06, 0x00, 0x04, 0x00, 0x07, 0x00, 0x00};  /* req_data_len too small */
 
-    printf("%-*s", print_cols, "test 192: parse 'Write File Record' request PDU with invalid req_data_len");
+    printf("%-*s", print_cols, "test 202: parse 'Write File Record' request PDU with invalid req_data_len");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -3938,7 +4166,7 @@ mb_test_result_t test_mb_pdu_parse_wr_file_rec_req_invalid_req_data_len2(void)
     ssize_t num = 0;
     char buf[] = {0x15, 0xfc, 0x06, 0x00, 0x04, 0x00, 0x07, 0x00, 0x00};  /* req_data_len too large */
 
-    printf("%-*s", print_cols, "test 193: parse 'Write File Record' request PDU with invalid req_data_len");
+    printf("%-*s", print_cols, "test 203: parse 'Write File Record' request PDU with invalid req_data_len");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -3953,7 +4181,7 @@ mb_test_result_t test_mb_pdu_parse_wr_file_rec_req_invalid_ref_type(void)
     ssize_t num = 0;
     char buf[] = {0x15, 0x0d, 0x05, 0x00, 0x04, 0x00, 0x07, 0x00, 0x03, 0x06, 0xaf, 0x04, 0xbe, 0x10, 0x0d};  /* ref_type != 6 */
 
-    printf("%-*s", print_cols, "test 194: parse 'Write File Record' request PDU with invalid ref_type");
+    printf("%-*s", print_cols, "test 204: parse 'Write File Record' request PDU with invalid ref_type");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -3968,7 +4196,7 @@ mb_test_result_t test_mb_pdu_parse_wr_file_rec_req_invalid_file_num(void)
     ssize_t num = 0;
     char buf[] = {0x15, 0x0d, 0x06, 0x00, 0x00, 0x00, 0x07, 0x00, 0x03, 0x06, 0xaf, 0x04, 0xbe, 0x10, 0x0d};  /* file_num too small */
 
-    printf("%-*s", print_cols, "test 195: parse 'Write File Record' request PDU with invalid file_num");
+    printf("%-*s", print_cols, "test 205: parse 'Write File Record' request PDU with invalid file_num");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -3983,7 +4211,7 @@ mb_test_result_t test_mb_pdu_parse_wr_file_rec_req_invalid_rec_num(void)
     ssize_t num = 0;
     char buf[] = {0x15, 0x0d, 0x06, 0x00, 0x04, 0x27, 0x10, 0x00, 0x03, 0x06, 0xaf, 0x04, 0xbe, 0x10, 0x0d};  /* rec_num too large */
 
-    printf("%-*s", print_cols, "test 196: parse 'Write File Record' request PDU with invalid rec_num");
+    printf("%-*s", print_cols, "test 206: parse 'Write File Record' request PDU with invalid rec_num");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -3998,7 +4226,7 @@ mb_test_result_t test_mb_pdu_parse_wr_file_rec_req_invalid_end_addr(void)
     ssize_t num = 0;
     char buf[] = {0x15, 0x0d, 0x06, 0x00, 0x04, 0x27, 0x0f, 0x00, 0x01};  /* 0x270f + 0x0001 > 0x270f */
 
-    printf("%-*s", print_cols, "test 197: parse 'Write File Record' request PDU with invalid end_addr");
+    printf("%-*s", print_cols, "test 207: parse 'Write File Record' request PDU with invalid end_addr");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -4018,7 +4246,7 @@ mb_test_result_t test_mb_pdu_parse_wr_file_rec_resp(void)
     ssize_t num = 0;
     char buf[] = {0x15, 0x0d, 0x06, 0x00, 0x04, 0x00, 0x07, 0x00, 0x03, 0x06, 0xaf, 0x04, 0xbe, 0x10, 0x0d};
 
-    printf("%-*s", print_cols, "test 198: parse 'Write File Record' response PDU");
+    printf("%-*s", print_cols, "test 208: parse 'Write File Record' response PDU");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -4064,7 +4292,7 @@ mb_test_result_t test_mb_pdu_parse_wr_file_rec_resp_invalid_resp_data_len1(void)
     ssize_t num = 0;
     char buf[] = {0x15, 0x07, 0x06, 0x00, 0x04, 0x00, 0x07, 0x00, 0x00};
 
-    printf("%-*s", print_cols, "test 199: parse 'Write File Record' response PDU with invalid resp_data_len");
+    printf("%-*s", print_cols, "test 209: parse 'Write File Record' response PDU with invalid resp_data_len");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -4079,7 +4307,7 @@ mb_test_result_t test_mb_pdu_parse_wr_file_rec_resp_invalid_resp_data_len2(void)
     ssize_t num = 0;
     char buf[] = {0x15, 0xfc, 0x06, 0x00, 0x04, 0x00, 0x07, 0x00, 0x00};
 
-    printf("%-*s", print_cols, "test 200: parse 'Write File Record' response PDU with invalid resp_data_len");
+    printf("%-*s", print_cols, "test 210: parse 'Write File Record' response PDU with invalid resp_data_len");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -4094,7 +4322,7 @@ mb_test_result_t test_mb_pdu_parse_wr_file_rec_resp_invalid_ref_type(void)
     ssize_t num = 0;
     char buf[] = {0x15, 0x0d, 0x05, 0x00, 0x00, 0x00, 0x07, 0x00, 0x03, 0x06, 0xaf, 0x04, 0xbe, 0x10, 0x0d};  /* ref_type != 6 */
 
-    printf("%-*s", print_cols, "test 201: parse 'Write File Record' response PDU with invalid ref_type");
+    printf("%-*s", print_cols, "test 211: parse 'Write File Record' response PDU with invalid ref_type");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -4109,7 +4337,7 @@ mb_test_result_t test_mb_pdu_parse_wr_file_rec_resp_invalid_file_num(void)
     ssize_t num = 0;
     char buf[] = {0x15, 0x0d, 0x06, 0x00, 0x00, 0x00, 0x07, 0x00, 0x03, 0x06, 0xaf, 0x04, 0xbe, 0x10, 0x0d};
 
-    printf("%-*s", print_cols, "test 202: parse 'Write File Record' response PDU with invalid file_num");
+    printf("%-*s", print_cols, "test 212: parse 'Write File Record' response PDU with invalid file_num");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -4124,7 +4352,7 @@ mb_test_result_t test_mb_pdu_parse_wr_file_rec_resp_invalid_rec_num(void)
     ssize_t num = 0;
     char buf[] = {0x15, 0x0d, 0x06, 0x00, 0x04, 0x27, 0x10, 0x00, 0x03, 0x06, 0xaf, 0x04, 0xbe, 0x10, 0x0d};
 
-    printf("%-*s", print_cols, "test 203: parse 'Write File Record' response PDU with invalid rec_num");
+    printf("%-*s", print_cols, "test 213: parse 'Write File Record' response PDU with invalid rec_num");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -4139,7 +4367,7 @@ mb_test_result_t test_mb_pdu_parse_wr_file_rec_resp_invalid_end_addr(void)
     ssize_t num = 0;
     char buf[] = {0x15, 0x0d, 0x06, 0x00, 0x04, 0x27, 0x0f, 0x00, 0x01};  /* 0x270f + 0x0001 > 0x270f */
 
-    printf("%-*s", print_cols, "test 204: parse 'Write File Record' response PDU with invalid end_addr");
+    printf("%-*s", print_cols, "test 214: parse 'Write File Record' response PDU with invalid end_addr");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -4158,7 +4386,7 @@ mb_test_result_t test_mb_pdu_parse_mask_wr_reg_req(void)
     ssize_t num = 0;
     char buf[] = {0x16, 0x00, 0x04, 0x00, 0xf2, 0x00, 0x25};
 
-    printf("%-*s", print_cols, "test 205: parse 'Mask Write Register' request PDU");
+    printf("%-*s", print_cols, "test 215: parse 'Mask Write Register' request PDU");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -4193,7 +4421,7 @@ mb_test_result_t test_mb_pdu_parse_mask_wr_reg_resp(void)
     ssize_t num = 0;
     char buf[] = {0x16, 0x00, 0x04, 0x00, 0xf2, 0x00, 0x25};
 
-    printf("%-*s", print_cols, "test 206: parse 'Mask Write Register' response PDU");
+    printf("%-*s", print_cols, "test 216: parse 'Mask Write Register' response PDU");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -4231,7 +4459,7 @@ mb_test_result_t test_mb_pdu_parse_rd_wr_mult_regs_req(void)
     ssize_t num = 0;
     char buf[] = {0x17, 0x00, 0x03, 0x00, 0x06, 0x00, 0x0e, 0x00, 0x03, 0x06, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff};
 
-    printf("%-*s", print_cols, "test 207: parse 'Read/Write Multiple Registers' request PDU");
+    printf("%-*s", print_cols, "test 217: parse 'Read/Write Multiple Registers' request PDU");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -4274,7 +4502,7 @@ mb_test_result_t test_mb_pdu_parse_rd_wr_mult_regs_req_invalid_quant_rd1(void)
     ssize_t num = 0;
     char buf[] = {0x17, 0x00, 0x03, 0x00, 0x00, 0x00, 0x0e, 0x00, 0x03, 0x06, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff};  /* quant_rd too small */
 
-    printf("%-*s", print_cols, "test 208: parse 'Read/Write Multiple Registers' request PDU with invalid quant_rd");
+    printf("%-*s", print_cols, "test 218: parse 'Read/Write Multiple Registers' request PDU with invalid quant_rd");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -4289,7 +4517,7 @@ mb_test_result_t test_mb_pdu_parse_rd_wr_mult_regs_req_invalid_quant_rd2(void)
     ssize_t num = 0;
     char buf[] = {0x17, 0x00, 0x03, 0x00, 0x7e, 0x00, 0x0e, 0x00, 0x03, 0x06, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff};  /* quant_rd too large */
 
-    printf("%-*s", print_cols, "test 209: parse 'Read/Write Multiple Registers' request PDU with invalid quant_rd");
+    printf("%-*s", print_cols, "test 219: parse 'Read/Write Multiple Registers' request PDU with invalid quant_rd");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -4304,7 +4532,7 @@ mb_test_result_t test_mb_pdu_parse_rd_wr_mult_regs_req_invalid_rd_end_addr(void)
     ssize_t num = 0;
     char buf[] = {0x17, 0xff, 0xff, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00};  /* 0xffff + 0x0001 > 0xffff */
 
-    printf("%-*s", print_cols, "test 210: parse 'Read/Write Multiple Registers' request PDU with invalid rd_end_addr");
+    printf("%-*s", print_cols, "test 220: parse 'Read/Write Multiple Registers' request PDU with invalid rd_end_addr");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_ADDR)
     {
@@ -4319,7 +4547,7 @@ mb_test_result_t test_mb_pdu_parse_rd_wr_mult_regs_req_invalid_quant_wr1(void)
     ssize_t num = 0;
     char buf[] = {0x17, 0x00, 0x03, 0x00, 0x06, 0x00, 0x0e, 0x00, 0x00, 0x06, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff};  /* quant_wr too small */
 
-    printf("%-*s", print_cols, "test 211: parse 'Read/Write Multiple Registers' request PDU with invalid quant_wr");
+    printf("%-*s", print_cols, "test 221: parse 'Read/Write Multiple Registers' request PDU with invalid quant_wr");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -4334,7 +4562,7 @@ mb_test_result_t test_mb_pdu_parse_rd_wr_mult_regs_req_invalid_quant_wr2(void)
     ssize_t num = 0;
     char buf[] = {0x17, 0x00, 0x03, 0x00, 0x06, 0x00, 0x0e, 0x00, 0x7e, 0x06, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff};  /* quant_wr too large */
 
-    printf("%-*s", print_cols, "test 212: parse 'Read/Write Multiple Registers' request PDU with invalid quant_wr");
+    printf("%-*s", print_cols, "test 222: parse 'Read/Write Multiple Registers' request PDU with invalid quant_wr");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -4349,7 +4577,7 @@ mb_test_result_t test_mb_pdu_parse_rd_wr_mult_regs_req_invalid_wr_end_addr(void)
     ssize_t num = 0;
     char buf[] = {0x17, 0x00, 0x03, 0x00, 0x06, 0xff, 0xff, 0x00, 0x01, 0x01};  /* 0xffff + 0x0001 */
 
-    printf("%-*s", print_cols, "test 213: parse 'Read/Write Multiple Registers' request PDU with invalid wr_end_addr");
+    printf("%-*s", print_cols, "test 223: parse 'Read/Write Multiple Registers' request PDU with invalid wr_end_addr");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -4364,7 +4592,7 @@ mb_test_result_t test_mb_pdu_parse_rd_wr_mult_regs_req_invalid_wr_byte_count1(vo
     ssize_t num = 0;
     char buf[] = {0x17, 0x00, 0x03, 0x00, 0x06, 0x00, 0x0e, 0x00, 0x03, 0x05, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff};  /* byte_count != 2 * quant_wr */
 
-    printf("%-*s", print_cols, "test 214: parse 'Read/Write Multiple Registers' request PDU with invalid wr_byte_count");
+    printf("%-*s", print_cols, "test 224: parse 'Read/Write Multiple Registers' request PDU with invalid wr_byte_count");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -4382,7 +4610,7 @@ mb_test_result_t test_mb_pdu_parse_rd_wr_mult_regs_resp(void)
     ssize_t num = 0;
     char buf[] = {0x17, 0x0c, 0x00, 0xfe, 0x0a, 0xcd, 0x00, 0x01, 0x00, 0x03, 0x00, 0x0d, 0x00, 0xff};
 
-    printf("%-*s", print_cols, "test 215: parse 'Read/Write Multiple Registers' response PDU");
+    printf("%-*s", print_cols, "test 225: parse 'Read/Write Multiple Registers' response PDU");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -4409,7 +4637,7 @@ mb_test_result_t test_mb_pdu_parse_rd_wr_mult_regs_resp_invalid_byte_count1(void
     ssize_t num = 0;
     char buf[] = {0x17, 0x01, 0x00};  /* byte_count not even */
 
-    printf("%-*s", print_cols, "test 216: parse 'Read/Write Multiple Registers' response PDU with invalid byte_count");
+    printf("%-*s", print_cols, "test 226: parse 'Read/Write Multiple Registers' response PDU with invalid byte_count");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -4424,7 +4652,7 @@ mb_test_result_t test_mb_pdu_parse_rd_wr_mult_regs_resp_invalid_byte_count2(void
     ssize_t num = 0;
     char buf[] = {0x17, 0xfc};  /* byte_count too large */
 
-    printf("%-*s", print_cols, "test 217: parse 'Read/Write Multiple Registers' response PDU with invalid byte_count");
+    printf("%-*s", print_cols, "test 227: parse 'Read/Write Multiple Registers' response PDU with invalid byte_count");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -4441,7 +4669,7 @@ mb_test_result_t test_mb_pdu_parse_rd_fifo_q_req(void)
     ssize_t num = 0;
     char buf[] = {0x18, 0x04, 0xde};
 
-    printf("%-*s", print_cols, "test 218: parse 'Read FIFO Queue' request PDU");
+    printf("%-*s", print_cols, "test 228: parse 'Read FIFO Queue' request PDU");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -4468,7 +4696,7 @@ mb_test_result_t test_mb_pdu_parse_rd_fifo_q_resp(void)
     ssize_t num = 0;
     char buf[] = {0x18, 0x00, 0x06, 0x00, 0x02, 0x01, 0xb8, 0x12, 0x84};
 
-    printf("%-*s", print_cols, "test 219: parse 'Read FIFO Queue' response PDU");
+    printf("%-*s", print_cols, "test 229: parse 'Read FIFO Queue' response PDU");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -4499,7 +4727,7 @@ mb_test_result_t test_mb_pdu_parse_rd_fifo_q_resp_invalid_byte_count1(void)
     ssize_t num = 0;
     char buf[] = {0x18, 0x00, 0x01};  /* byte_count not even */
 
-    printf("%-*s", print_cols, "test 220: parse 'Read FIFO Queue' response PDU with invalid byte_count");
+    printf("%-*s", print_cols, "test 230: parse 'Read FIFO Queue' response PDU with invalid byte_count");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -4514,7 +4742,7 @@ mb_test_result_t test_mb_pdu_parse_rd_fifo_q_resp_invalid_byte_count2(void)
     ssize_t num = 0;
     char buf[] = {0x18, 0x00, 0x04, 0x00, 0x02, 0x01, 0xb8, 0x12, 0x84};  /* byte_count does not match fifo_count */
 
-    printf("%-*s", print_cols, "test 221: parse 'Read FIFO Queue' response PDU with invalid byte_count");
+    printf("%-*s", print_cols, "test 231: parse 'Read FIFO Queue' response PDU with invalid byte_count");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -4529,7 +4757,7 @@ mb_test_result_t test_mb_pdu_parse_rd_fifo_q_resp_invalid_fifo_count(void)
     ssize_t num = 0;
     char buf[] = {0x18, 0x00, 0x42, 0x00, 0x20};  /* fifo_count too large */
 
-    printf("%-*s", print_cols, "test 222: parse 'Read FIFO Queue' response PDU with invalid fifo_count");
+    printf("%-*s", print_cols, "test 232: parse 'Read FIFO Queue' response PDU with invalid fifo_count");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -4548,7 +4776,7 @@ mb_test_result_t test_mb_pdu_parse_enc_if_trans_req(void)
     ssize_t num = 0;
     char buf[] = {0x2b, 0x0a, 0x01, 0x02, 0x03, 0x04};
 
-    printf("%-*s", print_cols, "test 223: parse 'Encapsulated Interface Transport' request PDU");
+    printf("%-*s", print_cols, "test 233: parse 'Encapsulated Interface Transport' request PDU");
     num = mb_pdu_parse_req(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -4583,7 +4811,7 @@ mb_test_result_t test_mb_pdu_parse_enc_if_trans_resp(void)
     ssize_t num = 0;
     char buf[] = {0x2b, 0x0a, 0x01, 0x02, 0x03, 0x04};
 
-    printf("%-*s", print_cols, "test 224: parse 'Encapsulated Interface Transport' response PDU");
+    printf("%-*s", print_cols, "test 234: parse 'Encapsulated Interface Transport' response PDU");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -4616,7 +4844,7 @@ mb_test_result_t test_mb_pdu_parse_err_resp(void)
     ssize_t num = 0;
     char buf[] = {0x81, 0x02};
 
-    printf("%-*s", print_cols, "test 225: parse 'Error' response PDU");
+    printf("%-*s", print_cols, "test 235: parse 'Error' response PDU");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != sizeof(buf))
     {
@@ -4639,7 +4867,7 @@ mb_test_result_t test_mb_pdu_parse_err_resp_invalid_except_code(void)
     ssize_t num = 0;
     char buf[] = {0x81, 0x07};
 
-    printf("%-*s", print_cols, "test 226: parse 'Error' response PDU with invalid except_code");
+    printf("%-*s", print_cols, "test 236: parse 'Error' response PDU with invalid except_code");
     num = mb_pdu_parse_resp(&pdu, buf, sizeof(buf));
     if (num != -MB_PDU_EXCEPT_ILLEGAL_VAL)
     {
@@ -4707,6 +4935,10 @@ int main(void)
                              test_mb_pdu_wr_mult_regs_resp_invalid_quant_regs1,
                              test_mb_pdu_wr_mult_regs_resp_invalid_quant_regs2,
                              test_mb_pdu_wr_mult_regs_resp_invalid_end_addr,
+                             test_mb_pdu_rep_server_id_req,
+                             test_mb_pdu_rep_server_id_resp,
+                             test_mb_pdu_rep_server_id_resp_invalid_byte_count1,
+                             test_mb_pdu_rep_server_id_resp_invalid_byte_count2,
                              test_mb_pdu_rd_file_rec_req,
                              test_mb_pdu_rd_file_rec_req_invalid_num_sub_req1,
                              test_mb_pdu_rd_file_rec_req_invalid_num_sub_req2,
@@ -4826,6 +5058,12 @@ int main(void)
                              test_mb_pdu_parse_wr_mult_regs_resp_invalid_quant_regs1,
                              test_mb_pdu_parse_wr_mult_regs_resp_invalid_quant_regs2,
                              test_mb_pdu_parse_wr_mult_regs_resp_invalid_end_addr,
+                             test_mb_pdu_parse_rep_server_id_req,
+                             test_mb_pdu_parse_rep_server_id_resp1,
+                             test_mb_pdu_parse_rep_server_id_resp2,
+                             test_mb_pdu_parse_rep_server_id_resp_invalid_byte_count1,
+                             test_mb_pdu_parse_rep_server_id_resp_invalid_byte_count2,
+                             test_mb_pdu_parse_rep_server_id_resp_invalid_run_ind_status,
                              test_mb_pdu_parse_rd_file_rec_req,
                              test_mb_pdu_parse_rd_file_rec_req_invalid_byte_count1,
                              test_mb_pdu_parse_rd_file_rec_req_invalid_byte_count2,
