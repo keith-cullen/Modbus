@@ -4,6 +4,9 @@ Modbus Protocol
 Copyright (c) 2016 - 2017 Keith Cullen
 
 
+Test Applications
+=================
+
 To test the PDU library
 -----------------------
 
@@ -80,7 +83,7 @@ $ ./test_mb_tcp_client
 
 
 Supported Protocol Versions
----------------------------
+===========================
 
 | Protocol Version                                        | Supported |
 |---------------------------------------------------------|-----------|
@@ -90,7 +93,7 @@ Supported Protocol Versions
 
 
 Supported Function Codes
-------------------------
+========================
 
 | Function Code                                           | Supported |
 |---------------------------------------------------------|-----------|
@@ -113,3 +116,22 @@ Supported Function Codes
 | (0x17) Read/Write Multiple Registers                    | yes       |
 | (0x18) Read FIFO Queue                                  | yes       |
 | (0x2b) Encapsulated Interface Transport                 | yes       |
+
+
+Validation History
+==================
+
+v0.1
+----
+
+BeagleBone Black
+----------------
+Debian 9.1
+
+Linux beaglebone 4.4.88-ti-r125 #1 SMP Thu Sep 21 19:23:24 UTC 2017 armv7l GNU/Linux
+
+HP Pavilion
+-----------
+Ubuntu 16.04
+
+Linux HighCreekLinux 4.13.0-38-generic #43~16.04.1-Ubuntu SMP Wed Mar 14 17:48:43 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux

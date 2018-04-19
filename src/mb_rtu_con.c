@@ -114,7 +114,7 @@ int mb_rtu_con_create(mb_rtu_con_t *con, const char *dev)
     }
     tcflush(con->serial_fd, TCIFLUSH);
     cfmakeraw(&options);
-    options.c_cflag = CREAD | CLOCAL | PARENB;
+    options.c_cflag |= CREAD | CLOCAL | PARENB;
     ret = cfsetispeed(&options, MB_RTU_CON_BAUD_RATE);
     if (ret < 0)
     {

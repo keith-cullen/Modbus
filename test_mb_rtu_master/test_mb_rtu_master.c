@@ -33,11 +33,11 @@
 #include "mb_rtu_adu.h"
 #include "mb_log.h"
 
-#define SLAVE_ADDR  1
-#define START_ADDR  0x0
-#define QUANT_REGS  1
+#define SLAVE_ADDR   1
+#define START_ADDR   0x0
+#define QUANT_REGS   1
 #define QUANT_COILS  1
-#define REG_VAL     0x5678
+#define REG_VAL      0x5678
 
 int read_coils(mb_rtu_master_t *master)
 {
