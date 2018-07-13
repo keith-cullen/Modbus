@@ -78,9 +78,9 @@ static uint16_t mb_rtu_adu_calc_crc(const uint8_t *buf, size_t len)
 
     for (i = 0; i < len; i++)
     {
-        t = crc_hi ^ buf[i];
-        crc_hi = crc_lo ^ mb_rtu_adu_crc_hi[t];
-        crc_lo = mb_rtu_adu_crc_lo[t];
+        t = crc_lo ^ buf[i];
+        crc_lo = crc_hi ^ mb_rtu_adu_crc_hi[t];
+        crc_hi = mb_rtu_adu_crc_lo[t];
     }
     return ((uint16_t)crc_hi << 8) | (uint16_t)crc_lo;
 }
