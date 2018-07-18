@@ -32,16 +32,15 @@
 #include "mb_tcp_adu.h"
 #include "mb_log.h"
 
-#define SERVER_ADDR    "127.0.0.1"
-#define SERVER_PORT    10000
-#define AUTH_ADDR      "127.0.0.1"  /* authorised server address */
-#define TIMEOUT_SEC    0
-#define TIMEOUT_USEC   500000
-#define TRANS_ID       1
-#define PROTO_ID       0
-#define FUNC_CODE      MB_PDU_RD_HOLD_REGS
-#define START_ADDR     0x0
-#define QUANT_REGS     1
+#define SERVER_ADDR   "127.0.0.1"
+#define SERVER_PORT   10000
+#define AUTH_ADDR     "127.0.0.1"  /* authorised server address */
+#define TIMEOUT_SEC   0
+#define TIMEOUT_USEC  500000
+#define TRANS_ID      1
+#define PROTO_ID      0
+#define START_ADDR    0x0
+#define QUANT_REGS    1
 
 int main(void)
 {
@@ -77,8 +76,8 @@ int main(void)
         return EXIT_FAILURE;
     }
     mb_log_notice("holding register[%d]: 0x%04x",
-                      req.pdu.rd_hold_regs_req.start_addr + 1,
-                      resp.pdu.rd_hold_regs_resp.reg_val[0]);
+                  req.pdu.rd_hold_regs_req.start_addr + 1,
+                  resp.pdu.rd_hold_regs_resp.reg_val[0]);
     mb_tcp_client_destroy(&client);
     return EXIT_SUCCESS;
 }

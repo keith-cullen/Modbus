@@ -59,15 +59,6 @@ static int handle(mb_rtu_slave_t *slave, mb_rtu_adu_t *req, mb_rtu_adu_t *resp)
             return -MB_PDU_EXCEPT_SERVER_DEV_FAIL;
         }
         return 0;
-    case MB_PDU_WR_SING_REG:
-        if (req->pdu.wr_sing_reg_req.reg_addr != HOLD_REG_ADDR)
-        {
-            return -MB_PDU_EXCEPT_ILLEGAL_ADDR;
-        }
-        hold_reg = req->pdu.wr_sing_reg_req.reg_val;
-        mb_rtu_adu_set_header(resp, req->addr);
-        mb_pdu_set_wr_sing_reg_req(&resp->pdu, HOLD_REG_ADDR, hold_reg);
-        return 0;
     default:
         return -MB_PDU_EXCEPT_ILLEGAL_FUNC;
     }
